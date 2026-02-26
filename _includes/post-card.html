@@ -1,0 +1,50 @@
+{% comment %}
+  Post card partial — used in home, archive, tag listing pages.
+  Expects `post` variable to be set before including.
+  Usage: {% include post-card.html post=p %}
+{% endcomment %}
+<article class="post-card">
+
+  {% if include.post.image %}
+  <a href="{{ include.post.url | relative_url }}" class="card-image" tabindex="-1" aria-hidden="true">
+    <img src="{{ include.post.image }}" alt="{{ include.post.image_alt | default: '' }}" loading="lazy" width="600" height="338">
+  </a>
+  {% else %}
+  <a href="{{ include.post.url | relative_url }}" class="card-image card-image--no-feature" tabindex="-1" aria-hidden="true"></a>
+  {% endif %}
+
+  <div class="card-body">
+
+    {% if include.post.categories.first %}
+    <a href="{{ '/topic/' | append: include.post.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="card-tag">{{ include.post.categories.first }}</a>
+    {% endif %}
+
+    <h3 class="card-title">
+      <a href="{{ include.post.url | relative_url }}">{{ include.post.title }}</a>
+    </h3>
+
+    {% if include.post.excerpt %}
+    <p class="card-excerpt">{{ include.post.excerpt | strip_html | truncatewords: 25 }}</p>
+    {% endif %}
+
+    <div class="card-meta">
+      {% assign _card_author_slug = include.post.author | default: site.author %}
+      {% assign _card_author_data = site.data.authors[_card_author_slug] %}
+      {% if _card_author_data.image %}
+      <img src="{{ _card_author_data.image | relative_url }}" alt="{{ _card_author_data.name }}" class="card-avatar" width="24" height="24" loading="lazy" style="border-radius:50%;object-fit:cover;">
+      {% else %}
+      <div class="card-avatar card-avatar--initials" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/>
+        </svg>
+      </div>
+      {% endif %}
+      <div class="card-meta-info">
+        <span class="card-author">{% include author-byline.html author=_card_author_slug %}</span>
+        <span class="card-date">{{ include.post.date | date: "%-d %b %Y" }} · {{ include.post.content | number_of_words | divided_by: 200 | plus: 1 }} min read</span>
+      </div>
+    </div>
+
+  </div><!-- /.card-body -->
+
+</article>

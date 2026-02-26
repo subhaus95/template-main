@@ -1,0 +1,85 @@
+<footer>
+  <div class="footer-inner">
+
+    <!-- Col 1: Brand -->
+    <div class="footer-brand">
+      <div class="footer-brand-logo">
+        {% if site.logo and site.logo != "" %}
+        <img src="{{ site.logo | relative_url }}" alt="{{ site.title }}" width="28" height="28">
+        {% endif %}
+        {{ site.title }}<span>.</span>
+      </div>
+      {% if site.description %}
+      <p class="footer-brand-desc">{{ site.description }}</p>
+      {% endif %}
+
+      <div class="footer-social">
+        {% if site.twitter and site.twitter != "" %}
+        <a href="https://x.com/{{ site.twitter }}" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+        {% endif %}
+        {% if site.facebook and site.facebook != "" %}
+        <a href="https://www.facebook.com/{{ site.facebook }}" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+        </a>
+        {% endif %}
+        <a href="{{ '/feed.xml' | relative_url }}" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="RSS feed">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 11a9 9 0 0 1 9 9"/>
+            <path d="M4 4a16 16 0 0 1 16 16"/>
+            <circle cx="5" cy="19" r="1"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Col 2: Topics -->
+    <nav aria-labelledby="footer-topics">
+      <h3 class="footer-col-title" id="footer-topics">Topics</h3>
+      <ul class="footer-links">
+        {% for category in site.categories limit: 6 %}
+        <li><a href="{{ '/topic/' | append: category[0] | downcase | replace: ' ', '-' | relative_url }}/">{{ category[0] }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <!-- Col 3: Secondary navigation -->
+    {% if site.secondary_navigation %}
+    <nav aria-labelledby="footer-company">
+      <h3 class="footer-col-title" id="footer-company">Company</h3>
+      <ul class="footer-links">
+        {% for item in site.secondary_navigation %}
+        <li><a href="{{ item.url | relative_url }}">{{ item.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+    {% endif %}
+
+    <!-- Col 4: Resources -->
+    <nav aria-labelledby="footer-resources">
+      <h3 class="footer-col-title" id="footer-resources">Resources</h3>
+      <ul class="footer-links">
+        <li><a href="{{ '/archive/' | relative_url }}">Archive</a></li>
+        <li><a href="{{ '/feed.xml' | relative_url }}">RSS Feed</a></li>
+        <li><a href="{{ '/topics/' | relative_url }}">All Topics</a></li>
+      </ul>
+    </nav>
+
+  </div><!-- /.footer-inner -->
+
+  <div class="footer-bottom">
+    <span class="footer-copy">
+      &copy; {{ 'now' | date: "%Y" }} {{ site.title }}.
+    </span>
+    <div class="footer-legal">
+      <a href="{{ '/privacy/' | relative_url }}">Privacy Policy</a>
+      <a href="{{ '/terms/' | relative_url }}">Terms of Service</a>
+    </div>
+  </div>
+
+</footer>

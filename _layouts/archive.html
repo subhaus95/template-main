@@ -1,0 +1,46 @@
+---
+layout: default
+---
+
+<header class="listing-header">
+  <div class="listing-header-inner">
+    <div class="listing-label">Archive</div>
+    <h1 class="listing-title">All articles</h1>
+    <p class="listing-desc">Every piece published on {{ site.title }}, newest first.</p>
+  </div>
+</header>
+
+<section class="listing-section">
+  <div class="listing-inner listing-inner--narrow">
+
+    {% if site.posts.size > 0 %}
+    <ol class="archive-list">
+      {% for post in site.posts %}
+      <li class="archive-item">
+
+        <time class="archive-date" datetime="{{ post.date | date: '%Y-%m-%d' }}">
+          <span class="archive-date-month">{{ post.date | date: "%b %Y" }}</span>
+        </time>
+
+        <div class="archive-item-body">
+          {% if post.categories.first %}
+          <a href="{{ '/topic/' | append: post.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="card-tag">{{ post.categories.first }}</a>
+          {% endif %}
+          <h2 class="archive-title">
+            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          </h2>
+        </div>
+
+        <span class="archive-reading-time">{{ post.content | number_of_words | divided_by: 200 | plus: 1 }} min</span>
+
+      </li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p class="listing-empty">No articles published yet.</p>
+    {% endif %}
+
+  </div>
+</section>
+
+{{ content }}

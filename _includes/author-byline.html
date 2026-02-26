@@ -1,0 +1,35 @@
+{% comment %}
+  author-byline.html — resolves author slug(s) to display names with profile links.
+
+  Parameters:
+    include.author  — the page's author value (string slug or array of slugs).
+                      Falls back to site.author if not provided.
+    include.link    — if "false" (string), suppresses the profile link (default: linked)
+
+  Supports single authors ("paul-hobson") and future multi-author arrays.
+{% endcomment %}
+
+{% assign _byline_raw = include.author | default: site.author %}
+{% assign _byline_link = include.link | default: "true" %}
+
+{% comment %} Normalise to array {% endcomment %}
+{% if _byline_raw.first %}
+  {% assign _byline_authors = _byline_raw %}
+{% else %}
+  {% assign _byline_authors = _byline_raw | split: "|||" %}
+  {% assign _byline_authors = "" | split: "" | push: _byline_raw %}
+{% endif %}
+
+{% for _slug in _byline_authors %}
+  {% assign _author_data = site.data.authors[_slug] %}
+  {% if _author_data %}
+    {% if _byline_link == "true" %}
+<a href="{{ '/author/' | append: _slug | relative_url }}/" class="author-link">{{ _author_data.name }}</a>
+    {% else %}
+<span class="author-name">{{ _author_data.name }}</span>
+    {% endif %}
+  {% else %}
+<span class="author-name">{{ _slug }}</span>
+  {% endif %}
+  {% unless forloop.last %}<span class="author-sep">, </span>{% endunless %}
+{% endfor %}

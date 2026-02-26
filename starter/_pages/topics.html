@@ -1,0 +1,35 @@
+---
+layout: default
+title: Topics
+permalink: /topics/
+---
+
+<header class="listing-header">
+  <div class="listing-header-inner">
+    <div class="listing-label">Browse</div>
+    <h1 class="listing-title">Topics</h1>
+    <p class="listing-desc">Explore every subject covered on {{ site.title }}.</p>
+  </div>
+</header>
+
+<section class="listing-section">
+  <div class="listing-inner">
+
+    {% if site.categories.size > 0 %}
+    <div class="topics-index-grid">
+      {% for category in site.categories %}
+      <a href="{{ '/topic/' | append: category[0] | downcase | replace: ' ', '-' | relative_url }}/" class="topic-card">
+        <div class="topic-card-image topic-card-image--placeholder"></div>
+        <div class="topic-card-body">
+          <h2 class="topic-card-name">{{ category[0] }}</h2>
+          <span class="topic-card-count">{{ category[1].size }} {% if category[1].size == 1 %}article{% else %}articles{% endif %}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="listing-empty">No topics yet.</p>
+    {% endif %}
+
+  </div>
+</section>

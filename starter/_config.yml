@@ -1,0 +1,113 @@
+# _config.yml — starter site configuration for the Loom theme
+# Copy this file to your site repo root and fill in the values below.
+
+remote_theme: pauldhobson/loom
+
+title: My Site
+description: A site built with the Loom theme.
+logo: /assets/images/loom_collective.jpg  # replace with your own logo
+url: "https://yourname.github.io"         # your GitHub Pages URL (no trailing slash)
+baseurl: ""
+author: your-github-username
+lang: en
+
+# Brand tokens — per-site CSS custom property overrides loaded after main.css.
+# Create assets/tokens/mysite.css and reference it here, e.g. /assets/tokens/mysite.css
+# Leave empty to use the default Loom palette.
+tokens_css: ""
+
+# Google Fonts or other font CDN URL. Leave empty to use system fonts.
+fonts_url: ""
+
+permalink: /:title/
+future: true
+
+# Social links (optional — set to empty string to hide)
+twitter: ""
+facebook: ""
+
+# Analytics — paste your Cloudflare Web Analytics token here (Settings → Web Analytics → your site)
+# Leave empty to disable.
+analytics_token: ""
+
+# Mapbox GL JS — paste your public token (pk.eyJ...) here.
+# Required only if you use the map visualization component.
+mapbox_token: ""
+
+# Giscus comments — get values from https://giscus.app after enabling GitHub Discussions on your repo.
+# Add `comments: true` to any post's front matter to show the comment widget.
+giscus:
+  repo: ""          # e.g. "yourname/yourname.github.io"
+  repo_id: ""       # from giscus.app
+  category: "Announcements"
+  category_id: ""   # from giscus.app
+
+collections:
+  pages:
+    output: true
+    permalink: /:title/
+
+defaults:
+  - scope:
+      path: "_posts"
+    values:
+      layout: post
+      image: /assets/images/og-default.png
+  - scope:
+      path: "_pages"
+    values:
+      layout: default
+
+plugins:
+  - jekyll-paginate-v2
+  - jekyll-archives
+  - jekyll-seo-tag
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-last-modified-at
+
+jekyll-archives:
+  enabled:
+    - categories
+    - tags
+  layouts:
+    category: topic
+    tag: tag
+  permalinks:
+    category: /topic/:name/
+    tag: /tag/:name/
+
+pagination:
+  enabled: true
+  per_page: 12
+  permalink: "/page/:num/"
+  title: ":title — page :num"
+  trail:
+    before: 2
+    after: 2
+
+navigation:
+  - title: Home
+    url: /
+  - title: Topics
+    url: /topics/
+  - title: Archive
+    url: /archive/
+
+secondary_navigation:
+  - title: About
+    url: /about/
+  - title: RSS
+    url: /feed.xml
+
+exclude:
+  - starter/
+  - src/
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - Gemfile
+  - Gemfile.lock
+  - .github/
+  - .gitignore
+  - README.md

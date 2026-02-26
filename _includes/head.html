@@ -1,0 +1,54 @@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if page.title %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+<meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | truncatewords: 30 }}{% else %}{{ site.description }}{% endif %}">
+
+<!-- Dark mode flash prevention — runs synchronously before first paint -->
+<script>
+  (function () {
+    var defaultDark = '{{ site.brand_default_theme | default: "light" }}' === 'dark';
+    var s = localStorage.getItem('theme');
+    var dark = s !== null ? s === 'dark' : defaultDark;
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  })();
+</script>
+
+<!-- Preconnect to CDN domains used by the viz runtime -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="preconnect" href="https://esm.sh">
+<link rel="preconnect" href="https://api.mapbox.com">
+<link rel="preconnect" href="https://events.mapbox.com">
+
+{% if site.mapbox_token and site.mapbox_token != "" %}
+<script>window.MAPBOX_TOKEN = '{{ site.mapbox_token }}';</script>
+{% endif %}
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{{ site.fonts_url | default: 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap' }}" rel="stylesheet">
+
+<!-- Theme stylesheet (Vite build output) -->
+<link rel="stylesheet" href="{{ '/assets/dist/main.css' | relative_url }}">
+
+<!-- Brand token overrides — loaded after main.css so variables cascade correctly -->
+{% assign _brand = site.brand | default: 'loom' %}
+<link rel="stylesheet" href="{{ '/assets/css/brand-' | append: _brand | append: '.css' | relative_url }}">
+
+{% if site.tokens_css and site.tokens_css != "" %}
+<!-- Site-specific token tweaks (optional extra overrides beyond the brand file) -->
+<link rel="stylesheet" href="{{ site.tokens_css | relative_url }}">
+{% endif %}
+
+<!-- Syntax highlighting (Rouge — light + dark) -->
+<link rel="stylesheet" href="{{ '/assets/css/syntax.css' | relative_url }}">
+
+{% seo %}
+
+{% if site.analytics_token and site.analytics_token != "" %}
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+  data-cf-beacon='{"token": "{{ site.analytics_token }}"}'></script>
+{% endif %}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en' }}" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} — {{ site.title }}</title>
+  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | truncatewords: 30 }}{% else %}{{ site.description }}{% endif %}">
+
+  <!-- Dark mode flash prevention (exact copy from _includes/head.html) -->
+  <script>
+    (function () {
+      var s = localStorage.getItem('loom-dark');
+      var dark = s !== null ? s === '1' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css" id="reveal-theme-base" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css" crossorigin>
+  <link rel="stylesheet" href="{{ '/assets/css/presentation.css' | relative_url }}">
+</head>
+<body>
+
+  <a href="{{ '/' | relative_url }}" class="presentation-back" title="Back to {{ site.title }}">
+    ← {{ site.title }}
+  </a>
+
+  <div class="reveal">
+    <div class="slides" id="slides-container"></div>
+  </div>
+
+  <!-- Jekyll-rendered content; split into slides by JS below.
+       Not display:none or hidden — Pagefind needs to crawl this text. -->
+  <div id="slides-raw" data-pagefind-body style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">{{ content }}</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js" crossorigin></script>
+
+  <script>
+    // Split rendered HTML on <hr> (kramdown renders `---` as <hr>) into slides
+    (function () {
+      var raw = document.getElementById('slides-raw');
+      var container = document.getElementById('slides-container');
+      var chunks = raw.innerHTML.split(/<hr\s*\/?>/i)
+        .map(function (s) { return s.trim(); })
+        .filter(Boolean);
+      container.innerHTML = chunks
+        .map(function (c) { return '<section>' + c + '</section>'; })
+        .join('');
+    })();
+
+    // Dark mode: swap to black theme if dark, then init Reveal
+    (function () {
+      if (document.documentElement.dataset.theme === 'dark') {
+        document.getElementById('reveal-theme-base').href =
+          'https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css';
+      }
+      Reveal.initialize({
+        hash: true,
+        controls: true,
+        progress: true,
+        slideNumber: 'c/t',
+        center: false,
+        transition: 'fade',
+        transitionSpeed: 'fast',
+        plugins: [ RevealHighlight, RevealNotes ],
+      });
+    })();
+  </script>
+
+</body>
+</html>

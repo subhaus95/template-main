@@ -1,0 +1,90 @@
+{% comment %}
+  carousel.html — single-image sliding carousel with dot indicators.
+
+  Usage in a post:
+    {% include carousel.html %}              (uses page.carousel front matter)
+    {% include carousel.html images=myvar %} (pass an explicit array)
+
+  Front matter format:
+    carousel:
+      - src: /assets/images/posts/photo.jpg
+        alt: "Alt text for accessibility"
+        caption: "Optional caption below image"  # optional
+{% endcomment %}
+
+{% assign _carousel_images = include.images | default: page.carousel %}
+{% if _carousel_images and _carousel_images.size > 0 %}
+
+{::nomarkdown}
+<div
+  class="carousel"
+  x-data="carousel()"
+  x-init='images = {{ _carousel_images | jsonify }}'
+>
+
+  <div class="carousel-viewport">
+    <div
+      class="carousel-track"
+      :style="'transform: translateX(-' + (idx * 100) + '%)'"
+    >
+      {% for img in _carousel_images %}
+      <div class="carousel-slide">
+        <img
+          src="{{ img.src | relative_url }}"
+          alt="{{ img.alt | default: '' }}"
+          loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+        >
+        {% if img.caption %}
+        <p class="carousel-caption">{{ img.caption }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if _carousel_images.size > 1 %}
+
+  <button
+    class="carousel-btn carousel-btn-prev"
+    @click="prev()"
+    x-show="idx > 0"
+    aria-label="Previous image"
+    type="button"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+  </button>
+
+  <button
+    class="carousel-btn carousel-btn-next"
+    @click="next()"
+    x-show="idx < images.length - 1"
+    aria-label="Next image"
+    type="button"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>
+  </button>
+
+  <div class="carousel-dots" role="tablist" aria-label="Carousel navigation">
+    {% for img in _carousel_images %}
+    <button
+      class="carousel-dot"
+      :class="idx === {{ forloop.index0 }} ? 'carousel-dot-active' : ''"
+      @click="goTo({{ forloop.index0 }})"
+      role="tab"
+      :aria-selected="idx === {{ forloop.index0 }}"
+      :aria-label="'Image ' + {{ forloop.index }} + ' of ' + images.length"
+      type="button"
+    ></button>
+    {% endfor %}
+  </div>
+
+  {% endif %}
+
+</div>
+{:/nomarkdown}
+
+{% endif %}

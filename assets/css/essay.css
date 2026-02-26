@@ -1,0 +1,818 @@
+/* =============================================================================
+   essay.css — Computational essay layout
+   Loaded when a post/page has tag "essay" or "story".
+   Depends on design tokens defined in src/main.css (--text, --text-2,
+   --text-3, --bg, --bg2, --bg3, --border, --card-bg, --accent, --radius).
+   ============================================================================= */
+
+/* ── Layout ─────────────────────────────────────────────────────────────────── */
+
+.essay-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 220px;
+  grid-template-rows: auto;
+  grid-template-areas: "toc main sidenotes";
+  align-items: start;
+  gap: 0 40px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.essay-toc       { grid-area: toc; }
+.essay-main      { grid-area: main; }
+.essay-sidenotes { grid-area: sidenotes; }
+
+/* Content column max reading width */
+.essay-article {
+  max-width: 720px;
+  padding-bottom: 80px;
+}
+
+/* ── Progress bar ───────────────────────────────────────────────────────────── */
+
+.essay-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: var(--progress, 0%);
+  height: 2px;
+  background: var(--accent, #1B6FEE);
+  /* No transition — keeps bar in sync with scroll position */
+  pointer-events: none;
+}
+
+/* ── TOC ────────────────────────────────────────────────────────────────────── */
+
+.essay-toc {
+  position: sticky;
+  top: 80px; /* below sticky nav */
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  padding: 48px 0 32px;
+  scrollbar-width: none; /* hide scrollbar — scroll still works */
+}
+
+.essay-toc::-webkit-scrollbar {
+  display: none;
+}
+
+.essay-toc-heading {
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-3, #9C9890);
+  margin: 0 0 10px 12px;
+}
+
+.essay-toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc-item {
+  margin: 0;
+}
+
+.toc-link {
+  display: block;
+  font-size: 0.8125rem; /* 13px */
+  line-height: 1.45;
+  color: var(--text-2, #6B6860);
+  text-decoration: none;
+  padding: 4px 8px 4px 12px;
+  border-left: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.toc-link:hover {
+  color: var(--accent, #F0177A);
+}
+
+.toc-link--active,
+.toc-item--active > .toc-link {
+  color: var(--accent, #1B6FEE);
+  border-left-color: var(--accent, #1B6FEE);
+  font-weight: 500;
+}
+
+.toc-item--sub > .toc-link {
+  padding-left: 24px;
+  font-size: 0.75rem;
+}
+
+/* ── Essay hero ─────────────────────────────────────────────────────────────── */
+
+.essay-hero {
+  padding: 48px 0 40px;
+}
+
+.essay-hero-figure {
+  margin: 0 0 36px;
+  border-radius: var(--radius, 12px);
+  overflow: hidden;
+}
+
+.essay-hero-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+}
+
+.essay-hero-caption {
+  font-size: 0.8125rem;
+  color: var(--text-3, #9C9890);
+  padding: 8px 4px 0;
+  text-align: center;
+}
+
+.essay-tag-label {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent, #1B6FEE);
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+.essay-tag-label:hover {
+  color: var(--accent, #F0177A);
+}
+
+.essay-title {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  line-height: 1.15;
+  color: var(--text, #111110);
+  margin: 0 0 16px;
+  letter-spacing: -0.01em;
+}
+
+.essay-excerpt {
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: var(--text-2, #6B6860);
+  font-style: italic;
+  margin: 0 0 24px;
+}
+
+.essay-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--border, #E4E2DF);
+  padding-top: 16px;
+}
+
+.essay-authors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.essay-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text, #111110);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.essay-author:hover {
+  color: var(--accent, #F0177A);
+}
+
+.essay-author-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.essay-meta-secondary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--text-3, #9C9890);
+}
+
+.essay-sep {
+  opacity: 0.5;
+}
+
+.essay-date,
+.essay-reading-time {
+  white-space: nowrap;
+}
+
+/* ── Content ────────────────────────────────────────────────────────────────── */
+
+/* essay-content inherits .gh-content styles from main.css */
+.essay-content {
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.75;
+}
+
+.essay-content h2 {
+  font-size: 1.5rem;
+  margin-top: 48px;
+  margin-bottom: 16px;
+  scroll-margin-top: 88px;
+}
+
+.essay-content h3 {
+  font-size: 1.125rem;
+  margin-top: 36px;
+  margin-bottom: 12px;
+  scroll-margin-top: 88px;
+}
+
+/* ── Callouts ───────────────────────────────────────────────────────────────── */
+
+.callout {
+  display: flex;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: var(--radius, 12px);
+  margin: 28px 0;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+
+.callout > .callout-icon {
+  flex-shrink: 0;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  margin-top: 1px;
+}
+
+.callout > .callout-body {
+  min-width: 0;
+}
+
+.callout > .callout-body p:first-child { margin-top: 0; }
+.callout > .callout-body p:last-child  { margin-bottom: 0; }
+
+.callout-note {
+  background: hsl(214 100% 97%);
+  border: 1px solid hsl(214 80% 85%);
+  color: hsl(214 40% 28%);
+}
+
+.callout-warning {
+  background: hsl(38 100% 96%);
+  border: 1px solid hsl(38 90% 78%);
+  color: hsl(38 60% 25%);
+}
+
+.callout-definition {
+  background: var(--bg3, #EEECEA);
+  border: 1px solid var(--border, #E4E2DF);
+  color: var(--text, #111110);
+}
+
+.callout-takeaway {
+  background: hsl(142 50% 96%);
+  border: 1px solid hsl(142 50% 78%);
+  color: hsl(142 45% 20%);
+}
+
+/* ── Code blocks ────────────────────────────────────────────────────────────── */
+
+/* pre/code base styles come from gh-content in main.css;
+   here we layer on copy button and line highlights. */
+
+.essay-content pre {
+  position: relative;  /* anchor the copy button */
+}
+
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  background: rgba(255 255 255 / 0.12);
+  border: 1px solid rgba(255 255 255 / 0.18);
+  border-radius: 4px;
+  color: rgba(255 255 255 / 0.65);
+  font-size: 0.6875rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+
+.copy-btn:hover {
+  background: rgba(255 255 255 / 0.22);
+  color: #fff;
+}
+
+.copy-btn--done {
+  color: #4ade80;
+  border-color: rgba(74 222 128 / 0.35);
+}
+
+/* Optional line highlight: wrap a line with <mark class="hl"> in the code */
+.essay-content pre code .hl {
+  display: block;
+  background: rgba(255 255 255 / 0.1);
+  margin: 0 -24px;
+  padding: 0 24px;
+  border-left: 3px solid var(--accent, #1B6FEE);
+}
+
+/* ── Figures ────────────────────────────────────────────────────────────────── */
+
+/* Standard figure — inherits gh-content figure styles */
+
+/* Full-bleed: breaks out of the content column across the full viewport */
+.figure-full {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 40px 0;
+}
+
+.figure-full img {
+  display: block;
+  width: 100%;
+  max-height: 560px;
+  object-fit: cover;
+}
+
+.figure-full figcaption {
+  max-width: 720px;
+  margin: 8px auto 0;
+  padding: 0 24px;
+  font-size: 0.8125rem;
+  color: var(--text-3, #9C9890);
+  text-align: center;
+}
+
+/* Figure grid — 2-up or 3-up images */
+.figure-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 28px 0;
+}
+
+.figure-grid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: calc(var(--radius, 12px) * 0.667);
+}
+
+/* ── Sidenotes ──────────────────────────────────────────────────────────────── */
+
+.essay-sidenotes {
+  position: relative;
+  padding-top: 136px; /* approx hero height — keeps first note near content start */
+}
+
+.sidenote {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--text-2, #6B6860);
+  padding: 0 0 0 12px;
+  border-left: 2px solid var(--border, #E4E2DF);
+  margin-bottom: 20px;
+}
+
+.sidenote-number {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--accent, #1B6FEE);
+  vertical-align: super;
+  margin-right: 3px;
+  line-height: 1;
+}
+
+.sidenote-anchor {
+  cursor: default;
+  display: inline;
+}
+
+.sidenote-marker {
+  font-size: 0.65em;
+  font-weight: 600;
+  vertical-align: super;
+  color: var(--accent, #1B6FEE);
+  margin-left: 1px;
+  line-height: 1;
+}
+
+/* ── Story / scrollytelling ─────────────────────────────────────────────────── */
+
+/* Full-bleed breakout so the sticky graphic has room */
+.story-section {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "sticky steps";
+  min-height: 100vh;
+  margin: 48px 0;
+  background: var(--bg2, #F7F6F5);
+  border-top: 1px solid var(--border, #E4E2DF);
+  border-bottom: 1px solid var(--border, #E4E2DF);
+}
+
+.story-sticky {
+  grid-area: sticky;
+}
+
+.story-graphic {
+  position: sticky;
+  top: 64px; /* nav height */
+  height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 32px;
+  overflow: hidden;
+}
+
+/* Viz widgets inside the graphic fill available space */
+.story-graphic [data-viz],
+.story-graphic [data-leaflet],
+.story-graphic [data-map],
+.story-graphic [data-d3],
+.story-graphic .ricker-widget {
+  width: 100%;
+  height: 100%;
+}
+
+.story-steps {
+  grid-area: steps;
+  padding: 25vh 48px 25vh 40px;
+}
+
+.story-step {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 0;
+  opacity: 0.3;
+  transition: opacity 0.35s ease;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text, #111110);
+}
+
+.story-step[data-active] {
+  opacity: 1;
+}
+
+.story-step h3 {
+  font-size: 1.0625rem;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+/* Step label chip (optional) */
+.story-step-label {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent, #1B6FEE);
+  margin-bottom: 8px;
+}
+
+/* ── Endnotes ───────────────────────────────────────────────────────────────── */
+
+.essay-endnotes {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border, #E4E2DF);
+}
+
+.essay-endnotes-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text, #111110);
+  margin: 0 0 16px;
+  letter-spacing: -0.01em;
+}
+
+.essay-endnotes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: endnote;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.essay-endnotes-list li {
+  counter-increment: endnote;
+  font-size: 0.8125rem;
+  color: var(--text-2, #6B6860);
+  line-height: 1.55;
+  padding-left: 28px;
+  position: relative;
+}
+
+.essay-endnotes-list li::before {
+  content: counter(endnote) '.';
+  position: absolute;
+  left: 0;
+  color: var(--accent, #1B6FEE);
+  font-weight: 600;
+}
+
+.essay-endnotes-list a {
+  color: var(--accent, #1B6FEE);
+  word-break: break-all;
+}
+
+.endnote-ref a {
+  color: var(--accent, #1B6FEE);
+  text-decoration: none;
+  font-size: 0.7em;
+  vertical-align: super;
+}
+
+/* ── Dark mode ──────────────────────────────────────────────────────────────── */
+
+[data-theme="dark"] .callout-note {
+  background: hsl(214 50% 14%);
+  border-color: hsl(214 45% 28%);
+  color: hsl(214 30% 78%);
+}
+
+[data-theme="dark"] .callout-warning {
+  background: hsl(38 50% 14%);
+  border-color: hsl(38 50% 30%);
+  color: hsl(38 40% 78%);
+}
+
+[data-theme="dark"] .callout-definition {
+  background: var(--bg3, #2B2926);
+  border-color: var(--border, #3A3733);
+  color: var(--text, #F0EFEE);
+}
+
+[data-theme="dark"] .callout-takeaway {
+  background: hsl(142 30% 13%);
+  border-color: hsl(142 35% 28%);
+  color: hsl(142 25% 78%);
+}
+
+[data-theme="dark"] .copy-btn {
+  background: rgba(0 0 0 / 0.25);
+  border-color: rgba(255 255 255 / 0.12);
+  color: rgba(255 255 255 / 0.5);
+}
+
+[data-theme="dark"] .copy-btn:hover {
+  background: rgba(0 0 0 / 0.4);
+  color: rgba(255 255 255 / 0.8);
+}
+
+[data-theme="dark"] .story-section {
+  background: var(--bg2, #1E1C1A);
+}
+
+[data-theme="dark"] .story-step {
+  color: var(--text, #F0EFEE);
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .essay-progress-bar,
+  .story-step,
+  .toc-link,
+  .copy-btn {
+    transition: none;
+  }
+
+  .story-step {
+    opacity: 1; /* always full opacity — no fade in/out */
+  }
+}
+
+/* ── Responsive: tablet (< 1280px) — drop sidenotes column ─────────────────── */
+
+@media (max-width: 1279px) {
+  .essay-layout {
+    grid-template-columns: 200px minmax(0, 1fr);
+    grid-template-areas: "toc main";
+  }
+
+  .essay-sidenotes {
+    display: none;
+  }
+
+  /* Show sidenotes inline within the content stream */
+  .sidenote {
+    display: block;
+    margin: 10px 0 16px 0;
+    padding: 12px 16px;
+    background: var(--bg3, #EEECEA);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent, #1B6FEE);
+    font-size: 0.875rem;
+  }
+}
+
+/* ── Responsive: narrow tablet (< 1024px) — condense TOC ───────────────────── */
+
+@media (max-width: 1023px) {
+  .essay-layout {
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 0 24px;
+  }
+
+  .essay-toc {
+    padding-top: 48px;
+  }
+
+  .story-section {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "sticky"
+      "steps";
+  }
+
+  .story-graphic {
+    position: relative;
+    top: 0;
+    height: 50vw;
+    min-height: 280px;
+    max-height: 440px;
+  }
+
+  .story-steps {
+    padding: 40px 32px;
+  }
+
+  .story-step {
+    min-height: unset;
+    padding: 24px 0;
+    opacity: 1; /* static on tablet/mobile — no Scrollama fade */
+  }
+}
+
+/* ── Responsive: mobile (< 768px) — single column, hide TOC ────────────────── */
+
+@media (max-width: 767px) {
+  .essay-layout {
+    display: block;
+    padding: 0 16px;
+  }
+
+  .essay-toc {
+    display: none;
+  }
+
+  .essay-sidenotes {
+    display: none;
+  }
+
+  .essay-title {
+    font-size: clamp(1.75rem, 6vw, 2.25rem);
+  }
+
+  .essay-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .essay-meta-secondary {
+    margin-left: 0;
+  }
+
+  .story-section {
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    left: 0;
+    transform: none;
+  }
+
+  .story-graphic {
+    height: 260px;
+  }
+
+  .story-steps {
+    padding: 24px 16px;
+  }
+
+  .figure-full {
+    left: 0;
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    transform: none;
+  }
+}
+
+/* ── Print / PDF ─────────────────────────────────────────────────────────────── */
+
+@media print {
+  /* Hide chrome — nav, TOC, sidebar, interactive widgets, social */
+  .nav,
+  .site-header,
+  .essay-toc,
+  .essay-sidenotes,
+  .essay-progress-bar,
+  .subscribe-cta,
+  .related-posts,
+  .series-nav,
+  .post-footer,
+  .post-nav,
+  .post-share,
+  .copy-btn,
+  .story-steps,           /* scrollytelling controls aren't useful in print */
+  [data-viz],
+  [data-leaflet],
+  [data-map],
+  [data-d3] {
+    display: none !important;
+  }
+
+  /* Single-column reflow */
+  .essay-layout {
+    display: block;
+    padding: 0;
+  }
+
+  .essay-main {
+    max-width: none;
+    padding: 0;
+  }
+
+  /* Typography — print-friendly */
+  body {
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #000;
+    background: #fff;
+  }
+
+  h1 { font-size: 22pt; margin-bottom: 8pt; }
+  h2 { font-size: 16pt; margin-top: 20pt; page-break-after: avoid; }
+  h3 { font-size: 13pt; margin-top: 14pt; page-break-after: avoid; }
+
+  /* Keep figures and code blocks from splitting across pages */
+  figure,
+  pre,
+  blockquote,
+  .callout { page-break-inside: avoid; }
+
+  /* Show sidenotes inline as footnote-style asides */
+  .sidenote {
+    display: block;
+    border-left: 2pt solid #999;
+    padding-left: 8pt;
+    margin: 8pt 0;
+    font-size: 9pt;
+    color: #555;
+  }
+
+  /* Expand link URLs after anchor text */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #555;
+  }
+  /* Suppress for footnote anchors, hash links, and JS links */
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after,
+  .toc-link::after,
+  .cite-ref::after {
+    content: "";
+  }
+
+  /* Ensure story-graphic static images are visible */
+  .story-graphic img,
+  .story-graphic figure {
+    display: block;
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+}

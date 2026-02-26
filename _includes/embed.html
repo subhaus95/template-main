@@ -1,0 +1,37 @@
+{% comment %}
+  _includes/embed.html — YouTube / Vimeo iframe
+  Parameters: url (req), title, caption
+  Accepts: youtube.com/watch?v=ID, youtu.be/ID, vimeo.com/ID
+  Usage: {% include embed.html url="https://youtu.be/dQw4w9WgXcQ" caption="Caption" %}
+{% endcomment %}
+{% assign e_url = include.url %}
+{% if e_url contains 'youtu' %}
+  {% if e_url contains 'watch?v=' %}
+    {% assign e_id = e_url | split: 'v=' | last | split: '&' | first %}
+  {% else %}
+    {% assign e_id = e_url | split: 'youtu.be/' | last | split: '?' | first %}
+  {% endif %}
+  {% assign e_src = 'https://www.youtube-nocookie.com/embed/' | append: e_id %}
+{% elsif e_url contains 'vimeo' %}
+  {% assign e_id = e_url | split: 'vimeo.com/' | last | split: '?' | first %}
+  {% assign e_src = 'https://player.vimeo.com/video/' | append: e_id %}
+{% else %}
+  {% assign e_src = nil %}
+{% endif %}
+
+{% if e_src %}
+<div class="video-embed">
+  <div class="video-embed-wrap">
+    <iframe
+      src="{{ e_src }}"
+      title="{{ include.title | default: 'Video embed' }}"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+      loading="lazy"
+    ></iframe>
+  </div>
+  {% if include.caption %}<p class="video-caption">{{ include.caption }}</p>{% endif %}
+</div>
+{% else %}
+<p class="video-caption"><em>Unrecognised video URL: {{ e_url }}</em></p>
+{% endif %}

@@ -1,0 +1,79 @@
+/* Loom-branded Reveal.js theme overrides
+   Loaded on top of reveal.js white.css (light) or black.css (dark).
+   Hardcoded hex values — main.css is not loaded in this standalone layout.
+   Values match src/main.css tokens exactly.
+   Targets .reveal-viewport (reveal.js v5 pattern; v4 used body).
+*/
+
+/* Typography */
+.reveal { font-family: 'DM Sans', system-ui, sans-serif; font-size: 36px; color: #111110; }
+[data-theme="dark"] .reveal { color: #ECEBE8; }
+
+.reveal .slides section { text-align: left; padding: 0 40px; }
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-weight: 400; text-transform: none; text-shadow: none; letter-spacing: -0.01em;
+  color: #111110;
+}
+[data-theme="dark"] .reveal h1,
+[data-theme="dark"] .reveal h2,
+[data-theme="dark"] .reveal h3 { color: #FAFAF8; }
+
+.reveal h1 { font-size: 2.2em; }
+.reveal h2 { font-size: 1.6em; }
+.reveal h3 { font-size: 1.25em; }
+.reveal .accent { color: #F0177A; }
+
+/* Backgrounds */
+.reveal-viewport { background: #FAFAF8; }
+[data-theme="dark"] .reveal-viewport { background: #111110; }
+
+/* Links */
+.reveal a { color: #F0177A; text-decoration: none; }
+.reveal a:hover { text-decoration: underline; }
+
+/* Blockquotes */
+.reveal blockquote {
+  font-family: 'Instrument Serif', Georgia, serif; font-style: italic;
+  border-left: 3px solid #F0177A; padding-left: 1em;
+  background: none; box-shadow: none; width: auto; color: #6B6860;
+}
+[data-theme="dark"] .reveal blockquote { color: #A8A49E; }
+
+/* Code */
+.reveal code {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.85em; background: #EEECEA; border-radius: 4px; padding: 0.15em 0.4em;
+}
+[data-theme="dark"] .reveal code { background: #242422; color: #FAFAF8; }
+.reveal pre { font-size: 0.65em; line-height: 1.55; border-radius: 8px; box-shadow: none; width: 100%; }
+.reveal pre code { background: none; padding: 0; border-radius: 0; }
+
+/* Progress bar */
+.reveal .progress { background: rgba(0,0,0,0.12); height: 3px; }
+[data-theme="dark"] .reveal .progress { background: rgba(255,255,255,0.12); }
+.reveal .progress span { background: #F0177A; }
+
+/* Controls */
+.reveal .controls { color: #F0177A; }
+
+/* Slide numbers */
+.reveal .slide-number {
+  font-family: 'DM Sans', sans-serif; font-size: 0.7rem;
+  background: none; color: #9C9890; bottom: 14px; right: 16px; padding: 0;
+}
+[data-theme="dark"] .reveal .slide-number { color: #6B6860; }
+
+/* Back link */
+.presentation-back {
+  position: fixed; top: 12px; left: 16px; z-index: 50;
+  font-size: 0.75rem; font-family: 'DM Sans', sans-serif;
+  color: rgba(0,0,0,0.30); text-decoration: none; transition: color 0.15s;
+}
+.presentation-back:hover { color: #F0177A; }
+[data-theme="dark"] .presentation-back { color: rgba(255,255,255,0.25); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal .progress span, .reveal .slides section { transition: none; }
+}

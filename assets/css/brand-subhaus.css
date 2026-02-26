@@ -1,0 +1,20 @@
+/*
+ * Brand: subhaus95
+ * Default theme: dark
+ * Accent: electric green (underground/electronic)
+ * Typography: monospace throughout
+ *
+ * Token overrides only — no layout CSS here.
+ */
+
+[data-brand="subhaus"] {
+  --accent:        #22C55E;
+  --accent-light:  #F0FDF4;
+  --font-body:     ui-monospace, 'Courier New', monospace;
+  --font-heading:  ui-monospace, 'Courier New', monospace;
+  --radius:        4px;
+}
+
+[data-brand="subhaus"][data-theme="dark"] {
+  --accent-light: #052E16;
+}

@@ -1,0 +1,19 @@
+loom:
+  name: "Loom Collective"
+  default_theme: "dark"
+
+paul:
+  name: "Paul Hobson"
+  default_theme: "light"
+
+qshift:
+  name: "Quantum Shift"
+  default_theme: "dark"
+
+wayward:
+  name: "Waywardhouse Publishing"
+  default_theme: "light"
+
+subhaus:
+  name: "subhaus95"
+  default_theme: "dark"

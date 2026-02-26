@@ -1,0 +1,25 @@
+{% comment %}
+  _includes/video.html — native HTML5 video
+  Parameters: src (req), poster, caption, type (default: video/mp4), loop, autoplay
+  Usage: {% include video.html src="/assets/video/demo.mp4" caption="Caption" %}
+{% endcomment %}
+<figure class="video-figure">
+  <div class="video-wrap">
+    <video
+      controls
+      playsinline
+      preload="metadata"
+      {% if include.poster %}poster="{{ include.poster | relative_url }}"{% endif %}
+      {% if include.loop %}loop{% endif %}
+      {% if include.autoplay %}autoplay muted{% endif %}
+    >
+      <source src="{{ include.src | relative_url }}" type="{{ include.type | default: 'video/mp4' }}">
+      <p>Your browser does not support HTML video.
+        <a href="{{ include.src | relative_url }}">Download the video</a>.
+      </p>
+    </video>
+  </div>
+  {% if include.caption %}
+  <figcaption class="video-caption">{{ include.caption }}</figcaption>
+  {% endif %}
+</figure>
