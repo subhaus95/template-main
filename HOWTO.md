@@ -1,33 +1,34 @@
-# Loom — Theme Reference
+# Loom Template — Reference Guide
 
-A complete reference for building, configuring, and writing content for the Loom Jekyll theme.
+A complete reference for building, configuring, and writing content using the Loom Jekyll template. This template is used as a git submodule shared across multiple independent site repositories. Most tasks described here apply to a **site repo** (e.g. `loomcollective.github.io`); template internals are in `template-main/` and are only edited when changing shared layout or functionality.
 
 ---
 
 ## Table of contents
 
 1. [Prerequisites](#1-prerequisites)
-2. [Local development](#2-local-development)
-3. [Configuration](#3-configuration)
-4. [Writing posts](#4-writing-posts)
-5. [Computational essays](#5-computational-essays)
-6. [Visualisations](#6-visualisations)
-7. [Search](#7-search)
-8. [Navigation](#8-navigation)
-9. [Comments](#9-comments)
-10. [Analytics](#10-analytics)
-11. [Series](#11-series)
-12. [Related posts and subscribe CTA](#12-related-posts-and-subscribe-cta)
-13. [RSS and sitemap](#13-rss-and-sitemap)
-14. [Dark mode](#14-dark-mode)
-15. [Images](#15-images)
-16. [Custom domain](#16-custom-domain)
-17. [GitHub Actions deployment](#17-github-actions-deployment)
-18. [Video embeds](#18-video-embeds)
-19. [Presentations](#19-presentations)
-20. [Photo galleries](#20-photo-galleries)
-21. [Authors](#21-authors)
-22. [Drafts workflow](#22-drafts-workflow)
+2. [Multi-site setup and submodule management](#2-multi-site-setup-and-submodule-management)
+3. [Local development](#3-local-development)
+4. [Configuration](#4-configuration)
+5. [Writing posts](#5-writing-posts)
+6. [Computational essays](#6-computational-essays)
+7. [Visualisations](#7-visualisations)
+8. [Search](#8-search)
+9. [Navigation](#9-navigation)
+10. [Comments](#10-comments)
+11. [Analytics](#11-analytics)
+12. [Series](#12-series)
+13. [Related posts and subscribe CTA](#13-related-posts-and-subscribe-cta)
+14. [RSS and sitemap](#14-rss-and-sitemap)
+15. [Dark mode](#15-dark-mode)
+16. [Images](#16-images)
+17. [Custom domain](#17-custom-domain)
+18. [GitHub Actions deployment](#18-github-actions-deployment)
+19. [Video embeds](#19-video-embeds)
+20. [Presentations](#20-presentations)
+21. [Photo galleries](#21-photo-galleries)
+22. [Authors](#22-authors)
+23. [Drafts workflow](#23-drafts-workflow)
 
 ---
 
@@ -54,19 +55,134 @@ npm install
 
 ---
 
-## 2. Local development
+## 2. Multi-site setup and submodule management
 
-Two processes run in parallel during development.
+Each site is an independent GitHub Pages repository. The shared template lives in `subhaus95/template-main` and is consumed as a git submodule mounted at `theme/` inside each site repo.
 
-**Terminal 1 — build CSS and JavaScript (Vite):**
+### Directory layout (site repo)
 
-```bash
-npm run dev
+```
+site-repo/
+├── theme/                  ← git submodule (subhaus95/template-main)
+│   ├── _layouts/
+│   ├── _includes/
+│   ├── _plugins/
+│   ├── src/                    Vite source
+│   └── assets/
+│       ├── css/                brand-*.css, syntax.css, essay.css
+│       └── js/                 core.js, viz-registry.js, viz/, models/
+├── assets/
+│   ├── dist/               ← Vite build output (main.css, main.js) — gitignored
+│   ├── css/                ← rsync'd from theme/assets/css/ at build time
+│   └── js/                 ← rsync'd from theme/assets/js/ at build time
+├── _posts/                 ← site-specific content
+├── _pages/                 ← site-specific pages
+├── _config.yml             ← site-specific config; points Jekyll at theme/ dirs
+└── index.html              ← site homepage
 ```
 
-Vite watches `src/main.css` and `src/main.js`, rebuilds to `assets/built/` on change.
+Jekyll reads layouts, includes, and plugins from inside the submodule via three keys in `_config.yml`:
 
-**Terminal 2 — run Jekyll:**
+```yaml
+layouts_dir:  theme/_layouts
+includes_dir: theme/_includes
+plugins_dir:  theme/_plugins
+```
+
+### Initialising a site repo locally
+
+After cloning a site repo for the first time, always initialise the submodule:
+
+```bash
+git clone https://github.com/OrgName/site-repo.github.io
+cd site-repo.github.io
+git submodule update --init --recursive
+```
+
+Or clone with submodules in one step:
+
+```bash
+git clone --recurse-submodules https://github.com/OrgName/site-repo.github.io
+```
+
+### Creating a new site repo
+
+1. Create the GitHub repo under the target org (e.g. `NewOrg/newsite.github.io`).
+2. Clone it locally.
+3. Add `template-main` as the `theme/` submodule:
+
+```bash
+git submodule add https://github.com/subhaus95/template-main theme
+git submodule update --init --recursive
+```
+
+4. Copy `_config.yml`, `Gemfile`, `Gemfile.lock`, and `index.html` from an existing site repo as a starting point. Update all site-specific values (see §4 Configuration).
+5. Create `_pages/` with at minimum `about.md`, `archive.html`, `404.html`, `privacy.md`, `terms.md`.
+6. Run the full build sequence (see §3) to verify everything works before the first push.
+7. Enable GitHub Pages in repo Settings → Pages → Source: GitHub Actions. The workflow in `theme/.github/workflows/` is not used directly — copy `.github/workflows/deploy.yml` from an existing site repo into the new repo and commit it.
+
+### Updating the template in a site repo
+
+After changes are pushed to `template-main`:
+
+```bash
+# From inside the site repo:
+git submodule update --remote
+git add theme
+git commit -m "Update theme"
+git push
+```
+
+The site repo now points to the latest `template-main` commit. CI will build with the new template on the next push.
+
+> **Never edit files inside `theme/`** from within a site repo. Changes there affect the submodule's working tree but are not committed to `template-main`. Edit template files in the `template-main` repo directly, push them there, then update the submodule pointer in each site repo.
+
+### Updating template-main
+
+```bash
+cd /path/to/template-main
+# make changes, then:
+git add <files>
+git commit -m "Description of template change"
+git push
+# Now update each site repo that should receive the change:
+cd /path/to/site-repo
+git submodule update --remote && git add theme && git commit -m "Update theme" && git push
+```
+
+---
+
+## 3. Local development
+
+All commands run from the **site repo root** unless noted otherwise. Ensure the submodule is initialised first (see §2).
+
+### First-time setup
+
+```bash
+# 1. Install Node deps (run from inside theme/)
+cd theme && npm ci && cd ..
+
+# 2. Copy static assets from submodule to site root
+rsync -a theme/assets/css/ assets/css/
+rsync -a theme/assets/js/  assets/js/
+
+# 3. Install Ruby gems
+bundle install
+```
+
+### Running the dev server
+
+Two processes run in parallel.
+
+**Terminal 1 — build CSS and JavaScript (Vite, run from inside `theme/`):**
+
+```bash
+cd theme && npm run dev
+```
+
+Vite watches `src/main.css` and `src/main.js` inside the submodule, and rebuilds to `../assets/dist/` (which resolves to the site repo's `assets/dist/` directory) on every change.
+
+**Terminal 2 — run Jekyll (run from site repo root):**
 
 ```bash
 bundle exec jekyll serve --livereload
@@ -74,34 +190,73 @@ bundle exec jekyll serve --livereload
 
 Site is available at `http://localhost:4000`.
 
+> **Note on `assets/css/` and `assets/js/`:** In CI these are rsync'd from `theme/assets/` at build time. In local development you only need to re-run the rsync commands above when brand CSS or the viz runtime changes in the submodule. Day-to-day editing of posts and pages does not require it.
+
 > **Note on search:** Pagefind requires a completed `_site/` directory to index. Search will return no results in local development unless you run the indexer manually after a full build:
 >
 > ```bash
-> npm run build && bundle exec jekyll build && npx pagefind --site _site
-> ```
->
-> Then start the Jekyll server pointing at the already-built `_site/`:
->
-> ```bash
+> # From site repo root:
+> (cd theme && npm run build)
+> rsync -a theme/assets/css/ assets/css/ && rsync -a theme/assets/js/ assets/js/
+> bundle exec jekyll build
+> npx pagefind --site _site
 > bundle exec jekyll serve --skip-initial-build
 > ```
+>
+> Running `jekyll serve` without `--skip-initial-build` overwrites `_site/` and removes the Pagefind index. Always build first, then serve with the flag.
 
 ---
 
-## 3. Configuration
+## 4. Configuration
 
-All site-wide settings live in `_config.yml`.
+All site-wide settings live in `_config.yml` in the **site repo root**. The template is never edited to change per-site configuration.
 
 ### Core identity
 
 ```yaml
-title: LoomCollective
-description: Clean typography, dark mode, computational essays.
-url: "https://loomcollective.ai"   # Full URL including scheme, no trailing slash
+title: My Site
+description: One-sentence description used in meta tags and the subscribe CTA.
+logo: /assets/images/logo.jpg      # Optional — shown in header/footer
+url: "https://example.github.io"   # Full URL including scheme, no trailing slash
 baseurl: ""                        # Empty for apex domains; "/path" for subpaths
-author: Your Name
+author: author-slug                # Slug matching a key in _data/authors.yml
 lang: en
 ```
+
+### Brand and theme
+
+```yaml
+# Brand — controls which assets/css/brand-{name}.css is loaded.
+brand: loom                        # loom | paul | qshift | wayward | subhaus
+brand_name: "Loom Collective"      # Full display name
+brand_default_theme: "dark"        # "dark" | "light" — initial theme on first visit
+
+# Override the Google Fonts URL for brand-specific typefaces (optional).
+fonts_url: ""
+
+# Additional CSS loaded after the brand file for any site-specific tweaks (optional).
+tokens_css: ""
+```
+
+### Submodule paths
+
+These three keys tell Jekyll where to find layouts, includes, and plugins inside the `theme/` submodule. They must be present in every site repo's `_config.yml` exactly as shown:
+
+```yaml
+layouts_dir:  theme/_layouts
+includes_dir: theme/_includes
+plugins_dir:  theme/_plugins
+```
+
+### Subscribe CTA
+
+```yaml
+# Set to true to suppress the RSS/subscribe call-to-action on all post pages.
+# Leave unset or false to show the CTA (default).
+hide_subscribe_cta: true
+```
+
+The CTA text is drawn from `site.description`. Sites that are not subscription-driven (e.g. a personal CV site or a homelab notebook) should set this flag.
 
 ### Permalink and pagination
 
@@ -200,7 +355,7 @@ defaults:
 
 ---
 
-## 4. Writing posts
+## 5. Writing posts
 
 ### File naming
 
@@ -301,7 +456,7 @@ Every post automatically gets:
 
 ---
 
-## 5. Computational essays
+## 6. Computational essays
 
 Essays use a three-column layout: sticky table of contents (left), content (centre), sidenotes (right). The layout collapses responsively to two columns on tablets and one column on mobile.
 
@@ -442,7 +597,7 @@ Added automatically to essay pages. A 2px accent-coloured bar at the top of the 
 
 ---
 
-## 6. Visualisations
+## 7. Visualisations
 
 The viz runtime (`assets/js/core.js`) scans the page after load, detects which libraries are needed, fetches them from CDN, and mounts each visualisation. Nothing loads on pages that don't use it.
 
@@ -572,6 +727,36 @@ Give the element an `id`, then reference it in each story step's `data-update`:
 ```
 
 The `data-update` value is passed directly to ECharts `setOption()`, so any partial update supported by ECharts works here.
+
+**Inline scripts with custom controls (sliders, buttons, etc.):**
+
+When a chart needs custom interactive controls that don't fit the `data-viz` / `data-update` pattern, you can write an inline script — but it must be `type="module"` and must wait for `window.echarts` to be set by core.js. A plain synchronous `<script>` runs during HTML parsing, before core.js has fetched ECharts from CDN, and will fail with `ReferenceError: echarts is not defined`.
+
+```html
+<div id="my-chart" style="height: 400px;"></div>
+
+<script type="module">
+// Wait for core.js to load ECharts (requires viz: true in front matter)
+while (!window.echarts) await new Promise(r => setTimeout(r, 50));
+
+const chart = window.echarts.init(document.getElementById('my-chart'));
+
+chart.setOption({
+  xAxis: { type: 'value' },
+  yAxis: { type: 'value' },
+  series: [{ type: 'line', data: [[0,0],[1,1],[2,4]] }]
+});
+
+// Wire up any controls here — chart is guaranteed to exist
+document.getElementById('my-slider').addEventListener('input', (e) => {
+  chart.setOption({ /* ... */ });
+});
+</script>
+```
+
+The `while (!window.echarts) await new Promise(r => setTimeout(r, 50))` line is the required boilerplate. It yields execution every 50ms until core.js has loaded ECharts, then proceeds. Omit it and the script will always fail.
+
+`viz: true` in front matter is still required — it tells core.js to load ECharts in the first place.
 
 ---
 
@@ -788,7 +973,7 @@ For token-free interactive maps, prefer Leaflet above.
 
 ---
 
-## 7. Search
+## 8. Search
 
 Search is powered by [Pagefind](https://pagefind.app), which indexes the built `_site/` directory at CI time and ships the index as static files alongside the site. No server is required.
 
@@ -849,7 +1034,7 @@ The `npx pagefind --site _site` step in `.github/workflows/deploy.yml` runs auto
 
 ---
 
-## 8. Navigation
+## 9. Navigation
 
 ### Header
 
@@ -889,7 +1074,7 @@ The header collapses to a hamburger on small screens. The drawer opens/closes wi
 
 ---
 
-## 9. Comments
+## 10. Comments
 
 Comments use [Giscus](https://giscus.app), backed by GitHub Discussions. Comments are stored in your repo's Discussions tab — no third-party database.
 
@@ -931,7 +1116,7 @@ The Giscus widget automatically follows the site's colour scheme. When you toggl
 
 ---
 
-## 10. Analytics
+## 11. Analytics
 
 The theme is wired for Cloudflare Web Analytics, which is privacy-respecting and free on Cloudflare's free plan.
 
@@ -954,7 +1139,7 @@ The script tag is only injected when the token is non-empty, so leaving it blank
 
 ---
 
-## 11. Series
+## 12. Series
 
 The series system groups related posts with a numbered navigation box that appears at the top of each post in the series.
 
@@ -986,7 +1171,7 @@ The navigation box appears automatically when at least two posts share the same 
 
 ---
 
-## 12. Related posts and subscribe CTA
+## 13. Related posts and subscribe CTA
 
 Both are included automatically on every post and essay page.
 
@@ -1003,11 +1188,19 @@ To improve related post quality: use consistent, specific tags. A post tagged `[
 
 ### Subscribe CTA
 
-A horizontal bar with a short description and an RSS link. The description is hardcoded in `_includes/subscribe-cta.html` — edit that file to change the copy.
+A horizontal bar with the site description and an RSS link. The description text comes from `site.description` in `_config.yml` — no template editing required.
+
+To suppress the CTA entirely on a site (e.g. a portfolio or homelab site where RSS subscription isn't the point), add to `_config.yml`:
+
+```yaml
+hide_subscribe_cta: true
+```
+
+This hides the block on all post and essay pages site-wide.
 
 ---
 
-## 13. RSS and sitemap
+## 14. RSS and sitemap
 
 Both are generated automatically by Jekyll plugins — no configuration required beyond having the plugins in `Gemfile` (they are already there).
 
@@ -1020,13 +1213,13 @@ The sitemap includes all posts, pages, and archive pages. The feed includes the 
 
 ---
 
-## 14. Dark mode
+## 15. Dark mode
 
 ### How it works
 
-Dark mode is stored in `localStorage` under the key `loom-dark` (`'1'` = dark, `'0'` = light). On first visit with no saved preference, the browser's system preference (`prefers-color-scheme`) is used.
+Dark mode is stored in `localStorage` under the key `'theme'` (value `'dark'` or `'light'`). On first visit with no saved preference, the site uses the `brand_default_theme` value from `_config.yml` (which may be `'dark'` or `'light'` depending on the brand).
 
-An inline `<script>` in `<head>` applies the `data-theme` attribute to `<html>` synchronously before first paint, preventing a flash of wrong colour scheme.
+An inline `<script>` in `<head>` reads `localStorage` and sets `data-theme` on `<html>` synchronously before first paint, preventing a flash of the wrong colour scheme.
 
 ### CSS theming
 
@@ -1060,7 +1253,7 @@ Tailwind's dark mode variant also uses this selector: `darkMode: ['selector', '[
 
 ---
 
-## 15. Images
+## 16. Images
 
 ### Feature images
 
@@ -1110,7 +1303,7 @@ Override per-post by setting `image:` in front matter. The `jekyll-seo-tag` plug
 
 ---
 
-## 16. Custom domain
+## 17. Custom domain
 
 ### Files
 
@@ -1143,22 +1336,27 @@ GitHub Pages enforces HTTPS automatically via Let's Encrypt once DNS propagates.
 
 ---
 
-## 17. GitHub Actions deployment
+## 18. GitHub Actions deployment
 
-Deployment is fully automated via `.github/workflows/deploy.yml`. Every push to `main` triggers a build and deploy.
+Deployment is fully automated via `.github/workflows/deploy.yml` in each **site repo**. Every push to `main` triggers a build and deploy.
 
 ### Build pipeline
 
 ```
 push to main
-  └── install Node 20 deps (npm ci)
-  └── build CSS/JS (npm run build → assets/built/)
-  └── install Ruby 3.3 gems (bundler-cache: true)
-  └── build Jekyll site (bundle exec jekyll build → _site/)
-  └── index with Pagefind (npx pagefind --site _site → _site/pagefind/)
+  └── checkout with submodules: recursive  (fetches theme/ submodule)
+  └── npm ci               (from working-directory: theme)
+  └── npm run build        (Vite → ../assets/dist/main.{css,js})
+  └── rsync -a theme/assets/css/ assets/css/
+      rsync -a theme/assets/js/  assets/js/
+  └── bundle install       (Ruby gems, cached)
+  └── bundle exec jekyll build --baseurl ""  (→ _site/)
+  └── npx pagefind --site _site              (→ _site/pagefind/)
   └── upload _site/ as GitHub Pages artifact
   └── deploy artifact to GitHub Pages
 ```
+
+The `submodules: recursive` flag on the checkout step is essential — without it, `theme/` is an empty directory and the build fails immediately.
 
 ### Enabling GitHub Pages
 
@@ -1184,11 +1382,11 @@ And inject into the page via a Jekyll variable in `_includes/head.html`.
 
 ### Caching
 
-npm and Bundler caches are both enabled — `cache: "npm"` on the Node setup step and `bundler-cache: true` on the Ruby setup step. A typical build after the first run takes about 60–90 seconds.
+npm and Bundler caches are both enabled — `cache: "npm"` on the Node setup step (with `cache-dependency-path: theme/package-lock.json`) and `bundler-cache: true` on the Ruby setup step. A typical build after the first run takes about 60–90 seconds.
 
 ---
 
-## 18. Video embeds
+## 19. Video embeds
 
 Two includes handle video content: `video.html` for self-hosted files and `embed.html` for YouTube/Vimeo.
 
@@ -1238,7 +1436,7 @@ Both includes render in a `16:9` aspect-ratio wrapper with `border-radius` match
 
 ---
 
-## 19. Presentations
+## 20. Presentations
 
 The `presentation` layout renders a full-screen [Reveal.js](https://revealjs.com/) slideshow without the normal site header or footer.
 
@@ -1311,7 +1509,7 @@ Content visible to the audience.
 
 ### Dark mode
 
-The presentation reads `localStorage` for the `loom-dark` key (the same key used by the rest of the site). If dark mode is active, the Reveal.js `black.css` base theme is loaded instead of `white.css`. The theme swap happens before `Reveal.initialize()` to prevent a flash of the wrong theme.
+The presentation reads `localStorage` for the `'theme'` key (the same key used by the rest of the site). If the value is `'dark'`, the Reveal.js `black.css` base theme is loaded instead of `white.css`. The theme swap happens before `Reveal.initialize()` to prevent a flash of the wrong theme.
 
 ### Styling
 
@@ -1319,7 +1517,7 @@ Override CSS lives in `assets/css/presentation.css` (a static file, not Vite-bui
 
 ---
 
-## 20. Photo galleries
+## 21. Photo galleries
 
 The `gallery` include renders a responsive 3-column photo grid with a click-to-enlarge lightbox powered by Alpine.js. No extra libraries or dependencies.
 
@@ -1391,7 +1589,7 @@ assets/images/posts/glaciers-field-sites/gorner-01.jpg
 
 ---
 
-## 21. Authors
+## 22. Authors
 
 Author profiles are stored in `_data/authors.yml`, keyed by slug. All display locations (post header, post card, essay hero, author bio card, author profile page) resolve the slug to the full data automatically.
 
@@ -1457,7 +1655,7 @@ If no image is set (or the key is empty), a placeholder avatar SVG is shown.
 
 ---
 
-## 22. Drafts workflow
+## 23. Drafts workflow
 
 Drafts live in `_drafts/` and are excluded from the production build. They are committed to git for version control and backup.
 
