@@ -37,6 +37,7 @@ import { renderMap, updateMap }              from './viz/mapbox.js';
 import { renderLeaflet, updateLeaflet }      from './viz/leaflet.js';
 import { renderD3, updateD3 }                from './viz/d3.js';
 import { renderRicker, renderRickerScrolly } from './models/ricker.js';
+import { initPyodide, renderPyodideCell }    from './viz/pyodide.js';
 
 // ── ECharts element router ────────────────────────────────────────────────────
 // [data-viz] elements: route to a named renderer or fall back to generic ECharts.
@@ -203,6 +204,34 @@ export const REGISTRY = [
     selector: '[data-map]',
     render:   (el) => renderMap(el, {}),
     update:   (el, data, instance) => updateMap(el, data, instance),
+  },
+
+  // ── Pyodide (Python-in-WebAssembly, interactive cells) ───────────────────────
+  //   Front matter: pyodide: true  →  body class tag-hash-pyodide
+  //   Also auto-detected from .pyodide-cell elements.
+  //
+  //   MUST be last in registry — Pyodide is ~8 MB from CDN; placing it last
+  //   ensures all other viz adapters render before this heavyweight load begins.
+  //
+  //   Authoring (in .qmd or raw Markdown):
+  //     ::: {.pyodide-cell}
+  //     ```python
+  //     import numpy as np
+  //     print(np.exp(-1.5))
+  //     ```
+  //     :::
+  //
+  //   Constraints: numpy pre-loaded; no file I/O; cells are stateless per run.
+  {
+    id: 'pyodide',
+    detect: () =>
+      document.body.classList.contains('tag-hash-pyodide') ||
+      !!document.querySelector('.pyodide-cell'),
+    cdn: { styles: [], scripts: [] },  // CDN loaded by initPyodide() via dynamic import
+    init:     initPyodide,
+    selector: '.pyodide-cell',
+    render:   renderPyodideCell,
+    update:   null,
   },
 
 ];
