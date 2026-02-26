@@ -1,0 +1,16 @@
+/*
+ * Brand: Waywardhouse Publishing
+ * Default theme: light
+ * Accent: warm amber (literary/publishing)
+ *
+ * Token overrides only — no layout CSS here.
+ */
+
+[data-brand="wayward"] {
+  --accent:       #B45309;
+  --accent-light: #FEF3C7;
+}
+
+[data-brand="wayward"][data-theme="dark"] {
+  --accent-light: #3B200A;
+}

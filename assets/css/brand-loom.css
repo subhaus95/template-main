@@ -1,0 +1,18 @@
+/*
+ * Brand: Loom Collective
+ * Default theme: dark
+ * Accent: magenta/pink
+ *
+ * Token overrides only — no layout CSS here.
+ * Light-mode values on [data-brand="loom"]
+ * Dark-mode values on [data-brand="loom"][data-theme="dark"]
+ */
+
+[data-brand="loom"] {
+  --accent:       #F0177A;
+  --accent-light: #FFE5F2;
+}
+
+[data-brand="loom"][data-theme="dark"] {
+  --accent-light: #45081C;
+}

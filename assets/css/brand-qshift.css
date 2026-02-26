@@ -1,0 +1,16 @@
+/*
+ * Brand: Quantum Shift
+ * Default theme: dark
+ * Accent: sky blue/cyan (science/tech)
+ *
+ * Token overrides only — no layout CSS here.
+ */
+
+[data-brand="qshift"] {
+  --accent:       #0EA5E9;
+  --accent-light: #E0F2FE;
+}
+
+[data-brand="qshift"][data-theme="dark"] {
+  --accent-light: #0C2A3A;
+}

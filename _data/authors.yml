@@ -1,0 +1,24 @@
+paul-hobson:
+  name: Paul Hobson
+  bio: >
+    Former Glaciologist and environmental modeller. Field experience on glaciers in the Swiss Alps
+    and Canadian Rockies. Interested in ice dynamics, catchment hydrology, and the
+    intersection of computational science and long-form writing.
+  image: /assets/images/authors/paul-hobson.jpg
+  location: "Calgary, AB"
+  website: ""
+  twitter: ""
+  github: ""
+
+# Demo second author — demonstrates co-authorship feature. Replace with a real
+# collaborator when needed; delete this entry if you never need multi-author posts.
+sophie-marchand:
+  name: Sophie Marchand
+  bio: >
+    Glaciologist and remote sensing specialist. Research focus on mass balance
+    measurements and surface velocity fields in alpine glacier systems.
+  image: ""
+  location: "Grenoble, France"
+  website: ""
+  twitter: ""
+  github: ""

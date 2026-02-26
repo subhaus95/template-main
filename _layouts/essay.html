@@ -1,0 +1,39 @@
+---
+layout: default
+---
+
+<!-- Essay stylesheet and runtime — self-contained -->
+<link rel="stylesheet" href="{{ '/assets/css/essay.css' | relative_url }}">
+<script type="module" src="{{ '/assets/js/essay/core.js' | relative_url }}"></script>
+
+<div class="essay-layout" id="essay-layout">
+
+  {% include essay-toc.html %}
+
+  <main class="essay-main" id="essay-main" role="main">
+    <article class="essay-article">
+
+      {% include essay-hero.html %}
+
+      {% include series-nav.html %}
+
+      <div class="essay-content gh-content" id="essay-content">
+        {{ content }}
+      </div>
+
+      {% include essay-footer-notes.html %}
+
+      {% include subscribe-cta.html %}
+      {% include giscus.html %}
+      {% include related-posts.html %}
+
+    </article>
+  </main>
+
+  <aside
+    class="essay-sidenotes"
+    id="essay-sidenotes"
+    aria-label="Margin notes"
+  ></aside>
+
+</div>

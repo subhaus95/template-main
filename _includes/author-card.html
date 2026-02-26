@@ -1,0 +1,37 @@
+{% comment %}
+  author-card.html — bio card shown at the end of each post.
+  Parameter: include.author — author slug (string)
+{% endcomment %}
+{% assign _card_slug = include.author | default: site.author %}
+{% assign _card_author = site.data.authors[_card_slug] %}
+{% if _card_author %}
+<aside class="author-card" aria-label="About the author">
+  <div class="author-card-inner">
+
+    {% if _card_author.image %}
+    <a href="{{ '/author/' | append: _card_slug | relative_url }}/" tabindex="-1" aria-hidden="true">
+      <img
+        src="{{ _card_author.image | relative_url }}"
+        alt="{{ _card_author.name }}"
+        class="author-card-avatar"
+        width="80"
+        height="80"
+        loading="lazy"
+      >
+    </a>
+    {% else %}
+    <div class="author-card-avatar author-card-avatar--placeholder" style="width:80px;height:80px;" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>
+    </div>
+    {% endif %}
+
+    <div>
+      <a href="{{ '/author/' | append: _card_slug | relative_url }}/" class="author-card-name">{{ _card_author.name }}</a>
+      {% if _card_author.location %}<span class="author-card-location">{{ _card_author.location }}</span>{% endif %}
+      {% if _card_author.bio %}<p class="author-card-bio">{{ _card_author.bio }}</p>{% endif %}
+      {% if _card_author.website != "" and _card_author.website %}<a href="{{ _card_author.website }}" class="author-card-website" rel="noopener">{{ _card_author.website }}</a>{% endif %}
+    </div>
+
+  </div>
+</aside>
+{% endif %}

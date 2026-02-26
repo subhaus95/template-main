@@ -1,0 +1,63 @@
+{% comment %}
+  related-posts.html — Up to 3 posts sharing the most tags with the current post.
+  Uses tag-intersection scoring: posts with more matching tags rank higher.
+  Falls back to same category if no tag matches exist.
+{% endcomment %}
+
+{% assign max_related = 3 %}
+{% assign current_tags = page.tags %}
+{% assign scored = "" | split: "" %}
+
+{% for post in site.posts %}
+  {% unless post.url == page.url %}
+    {% assign score = 0 %}
+    {% for tag in current_tags %}
+      {% if post.tags contains tag %}
+        {% assign score = score | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+    {% if page.categories.first and post.categories contains page.categories.first %}
+      {% assign score = score | plus: 1 %}
+    {% endif %}
+    {% if score > 0 %}
+      {% assign entry = post.url | append: "|" | append: score %}
+      {% assign scored = scored | push: entry %}
+    {% endif %}
+  {% endunless %}
+{% endfor %}
+
+{% assign scored = scored | sort | reverse %}
+
+{% assign related_posts = "" | split: "" %}
+{% for entry in scored limit: max_related %}
+  {% assign entry_url = entry | split: "|" | first %}
+  {% for post in site.posts %}
+    {% if post.url == entry_url %}
+      {% assign related_posts = related_posts | push: post %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+{% if related_posts.size > 0 %}
+<aside class="related-posts" aria-label="Related articles">
+  <h2 class="related-posts-heading">Related</h2>
+  <div class="related-posts-grid">
+    {% for post in related_posts %}
+    <a href="{{ post.url | relative_url }}" class="related-post-card">
+      {% if post.image %}
+      <div class="related-post-img" style="background-image:url('{{ post.image | relative_url }}')"></div>
+      {% else %}
+      <div class="related-post-img" aria-hidden="true"></div>
+      {% endif %}
+      <div class="related-post-body">
+        {% if post.categories.first %}
+        <span class="related-post-tag">{{ post.categories.first }}</span>
+        {% endif %}
+        <h3 class="related-post-title">{{ post.title }}</h3>
+        <time class="related-post-date" datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%-d %b %Y" }}</time>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</aside>
+{% endif %}

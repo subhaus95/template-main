@@ -1,0 +1,16 @@
+/*
+ * Brand: Paul Hobson
+ * Default theme: light
+ * Accent: blue (editorial/personal)
+ *
+ * Token overrides only — no layout CSS here.
+ */
+
+[data-brand="paul"] {
+  --accent:       #2563EB;
+  --accent-light: #EFF6FF;
+}
+
+[data-brand="paul"][data-theme="dark"] {
+  --accent-light: #1E3A5F;
+}

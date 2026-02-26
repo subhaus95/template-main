@@ -1,0 +1,49 @@
+<!-- essay-hero.html — Header for computational essay template.
+     Displays feature image, tag label, title, excerpt, and post metadata. -->
+
+<header class="essay-hero">
+  {% if page.image %}
+  <figure class="essay-hero-figure">
+    <img
+      src="{{ page.image }}"
+      alt="{{ page.image_alt | default: page.title }}"
+      class="essay-hero-img"
+      loading="eager"
+    >
+    {% if page.image_caption %}
+    <figcaption class="essay-hero-caption">{{ page.image_caption }}</figcaption>
+    {% endif %}
+  </figure>
+  {% endif %}
+
+  <div class="essay-hero-body">
+    {% if page.categories.first %}
+    <a href="{{ '/topic/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="essay-tag-label">{{ page.categories.first }}</a>
+    {% endif %}
+
+    <h1 class="essay-title">{{ page.title }}</h1>
+
+    {% if page.excerpt %}
+    <p class="essay-excerpt">{{ page.excerpt | strip_html }}</p>
+    {% endif %}
+
+    <div class="essay-meta">
+      <div class="essay-authors">
+        <span class="essay-author">
+          {% assign _essay_author_slug = page.author | default: site.author %}
+          {% include author-byline.html author=_essay_author_slug %}
+        </span>
+      </div>
+      <div class="essay-meta-secondary">
+        <time class="essay-date" datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%-d %b %Y" }}</time>
+        {% assign _updated = page.updated | default: page.last_modified_at %}
+        {% if _updated %}
+        <span class="essay-sep" aria-hidden="true">·</span>
+        <span class="essay-updated">Updated <time datetime="{{ _updated | date: '%Y-%m-%d' }}">{{ _updated | date: "%-d %b %Y" }}</time></span>
+        {% endif %}
+        <span class="essay-sep" aria-hidden="true">·</span>
+        <span class="essay-reading-time">{{ page.content | number_of_words | divided_by: 200 | plus: 1 }} min read</span>
+      </div>
+    </div>
+  </div>
+</header>

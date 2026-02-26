@@ -1,0 +1,97 @@
+{% comment %}
+  gallery.html — responsive photo grid with Alpine.js lightbox.
+
+  Usage in a post:
+    {% include gallery.html %}            (uses page.gallery front matter)
+    {% include gallery.html images=myvar %} (pass an explicit array)
+
+  Front matter format:
+    gallery:
+      - src: /assets/images/posts/photo.jpg
+        alt: "Alt text for accessibility"
+        caption: "Optional visible caption in lightbox"  # optional
+{% endcomment %}
+
+{% assign _gallery_images = include.images | default: page.gallery %}
+{% if _gallery_images and _gallery_images.size > 0 %}
+
+{::nomarkdown}
+<div
+  class="gallery"
+  x-data="gallery()"
+  x-init='images = {{ _gallery_images | jsonify }}'
+>
+
+  <!-- Grid -->
+  {% for img in _gallery_images %}
+  <button
+    class="gallery-item"
+    @click="show({{ forloop.index0 }})"
+    aria-label="View photo {% if img.alt %}: {{ img.alt }}{% else %}{{ forloop.index }}{% endif %}"
+    type="button"
+  >
+    <img
+      src="{{ img.src | relative_url }}"
+      alt="{{ img.alt | default: '' }}"
+      loading="lazy"
+    >
+  </button>
+  {% endfor %}
+
+  <!-- Lightbox -->
+  <div
+    class="gallery-lightbox"
+    x-show="active"
+    x-transition:enter="gallery-lb-enter"
+    x-transition:enter-start="gallery-lb-enter-start"
+    x-transition:enter-end="gallery-lb-enter-end"
+    x-transition:leave="gallery-lb-leave"
+    x-transition:leave-start="gallery-lb-leave-start"
+    x-transition:leave-end="gallery-lb-leave-end"
+    @click.self="hide()"
+    role="dialog"
+    aria-modal="true"
+    :aria-label="images[idx]?.alt || 'Photo lightbox'"
+    style="display:none;"
+  >
+    <button class="gallery-lb-close" @click="hide()" aria-label="Close" x-ref="close" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <button class="gallery-lb-nav gallery-lb-prev" @click="prev()" x-show="idx > 0" aria-label="Previous photo" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+
+    <figure class="gallery-lb-figure">
+      <img
+        class="gallery-lb-img"
+        :src="images[idx]?.src"
+        :alt="images[idx]?.alt || ''"
+      >
+      <figcaption
+        class="gallery-lb-caption"
+        x-show="images[idx]?.caption"
+        x-text="images[idx]?.caption"
+      ></figcaption>
+    </figure>
+
+    <button class="gallery-lb-nav gallery-lb-next" @click="next()" x-show="idx < images.length - 1" aria-label="Next photo" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+
+    <div class="gallery-lb-counter" aria-live="polite">
+      <span x-text="idx + 1"></span> / <span x-text="images.length"></span>
+    </div>
+
+  </div><!-- /.gallery-lightbox -->
+
+</div><!-- /.gallery -->
+{:/nomarkdown}
+
+{% endif %}

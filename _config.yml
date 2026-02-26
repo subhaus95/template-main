@@ -1,0 +1,118 @@
+title: Loom
+description: Jekyll theme. Clean typography, dark mode, computational essays.
+logo: /assets/images/loom_collective.jpg
+url: ""
+baseurl: ""
+author: ""
+lang: en
+
+# Brand — controls which brand CSS token file is loaded.
+# brand:              short key, used to select assets/css/brand-{name}.css
+# brand_name:         human-readable site name
+# brand_default_theme: 'light' or 'dark' — used before localStorage is read
+brand: loom
+brand_name: "Loom Collective"
+brand_default_theme: "dark"
+
+# fonts_url — override the Google Fonts URL if the brand uses different typefaces.
+fonts_url: ""
+
+# tokens_css — optional extra CSS loaded after the brand file for site-specific tweaks.
+# Leave empty for the default brand palette.
+tokens_css: ""
+
+permalink: /:title/
+future: true
+
+# Social links (optional — set to empty string to hide)
+twitter: ""
+facebook: ""
+
+# Analytics — paste your Cloudflare Web Analytics token here (Settings → Web Analytics → your site)
+# Leave empty to disable. To swap providers later, replace this block with your new snippet.
+analytics_token: ""
+
+# Mapbox GL JS — paste your public token (pk.eyJ...) here.
+# Keep secret tokens in GitHub Actions secrets instead (see HOWTO.md §17).
+mapbox_token: ""
+
+# Giscus comments — get values from https://giscus.app after enabling GitHub Discussions on the repo
+# Add `comments: true` to any post's front matter to show the comment widget.
+giscus:
+  repo: ""
+  repo_id: ""
+  category: "Announcements"
+  category_id: ""
+
+collections:
+  pages:
+    output: true
+    permalink: /:title/
+
+defaults:
+  - scope:
+      path: "_posts"
+    values:
+      layout: post
+      image: /assets/images/og-default.png
+  - scope:
+      path: "_pages"
+    values:
+      layout: default
+
+plugins:
+  - jekyll-paginate-v2
+  - jekyll-archives
+  - jekyll-seo-tag
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-last-modified-at
+
+jekyll-archives:
+  enabled:
+    - categories
+    - tags
+  layouts:
+    category: topic
+    tag: tag
+  permalinks:
+    category: /topic/:name/
+    tag: /tag/:name/
+
+pagination:
+  enabled: true
+  per_page: 12
+  permalink: "/page/:num/"
+  title: ":title — page :num"
+  trail:
+    before: 2
+    after: 2
+
+navigation:
+  - title: Home
+    url: /
+  - title: Topics
+    url: /topics/
+  - title: Archive
+    url: /archive/
+
+secondary_navigation:
+  - title: About
+    url: /about/
+  - title: RSS
+    url: /feed.xml
+
+exclude:
+  - starter/
+  - src/
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - vite.config.js
+  - tailwind.config.js
+  - postcss.config.js
+  - Gemfile
+  - Gemfile.lock
+  - .github/
+  - .gitignore
+  - README.md

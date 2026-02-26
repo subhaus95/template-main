@@ -1,0 +1,62 @@
+---
+layout: default
+---
+
+{% assign _author = site.data.authors[page.author_slug] %}
+
+<main>
+
+  <!-- AUTHOR HEADER -->
+  <section class="author-header">
+    <div class="author-header-inner">
+
+      {% if _author.image %}
+      <img
+        src="{{ _author.image | relative_url }}"
+        alt="{{ _author.name }}"
+        class="author-header-avatar"
+        width="88"
+        height="88"
+        loading="eager"
+      >
+      {% else %}
+      <div class="author-header-avatar author-header-avatar--placeholder" style="width:88px;height:88px;" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>
+      </div>
+      {% endif %}
+
+      <div class="author-header-body">
+        <h1 class="author-header-name">{{ _author.name | default: page.title }}</h1>
+        {% if _author.bio %}
+        <p class="author-header-bio">{{ _author.bio }}</p>
+        {% endif %}
+        <div class="author-header-meta">
+          {% if _author.location %}<span>{{ _author.location }}</span>{% endif %}
+          {% if _author.website != "" and _author.website %}<a href="{{ _author.website }}" rel="noopener">Website</a>{% endif %}
+          {% if _author.twitter != "" and _author.twitter %}<a href="https://twitter.com/{{ _author.twitter }}" rel="noopener">@{{ _author.twitter }}</a>{% endif %}
+          {% if _author.github != "" and _author.github %}<a href="https://github.com/{{ _author.github }}" rel="noopener">GitHub</a>{% endif %}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- POST LISTING -->
+  {% assign _author_posts = site.posts | where: "author", page.author_slug %}
+  {% if _author_posts.size > 0 %}
+  <section class="listing-section">
+    <div class="listing-inner">
+      <div class="section-header">
+        <h2 class="section-title">Posts by {{ _author.name | default: page.title }}</h2>
+        <span class="section-link">{{ _author_posts.size }} {% if _author_posts.size == 1 %}article{% else %}articles{% endif %}</span>
+      </div>
+      <div class="posts-grid">
+        {% for post in _author_posts %}
+          {% include post-card.html post=post %}
+        {% endfor %}
+      </div><!-- /.posts-grid -->
+    </div>
+  </section>
+  {% endif %}
+
+</main>

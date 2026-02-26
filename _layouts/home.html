@@ -1,0 +1,133 @@
+---
+layout: default
+---
+
+<!-- HERO -->
+<section class="hero-section">
+  <div class="hero">
+    {% assign _hero = site.posts.first %}
+
+    <div class="hero-content">
+      <h1 class="hero-headline">
+        {{ site.hero_heading | default: site.title }}
+      </h1>
+
+      <p class="hero-sub">
+        {{ site.hero_subheading | default: site.description }}
+      </p>
+
+      {% if _hero %}
+      <a href="{{ _hero.url | relative_url }}" class="hero-cta-btn">Start reading →</a>
+      {% endif %}
+    </div><!-- /.hero-content -->
+
+    <!-- Latest post — clickable preview card -->
+    {% if _hero %}
+    <div class="hero-visual">
+      <a href="{{ _hero.url | relative_url }}" class="hero-card-link" aria-label="Read: {{ _hero.title }}">
+        <article class="post-card hero-card-preview">
+          {% if _hero.image %}
+          <div class="card-image">
+            <img src="{{ _hero.image }}" alt="" loading="eager">
+          </div>
+          {% else %}
+          <div class="card-image card-image--no-feature"></div>
+          {% endif %}
+          <div class="card-body">
+            <span class="hero-card-latest-label">Latest</span>
+            {% if _hero.categories.first %}
+            <span class="card-tag">{{ _hero.categories.first }}</span>
+            {% endif %}
+            <h3 class="card-title">{{ _hero.title }}</h3>
+            {% if _hero.excerpt %}
+            <p class="card-excerpt">{{ _hero.excerpt | strip_html | truncatewords: 20 }}</p>
+            {% endif %}
+            <div class="card-meta">
+              {% assign _hero_author_slug = _hero.author | default: site.author %}
+              {% assign _hero_first_slug = _hero_author_slug | first | default: _hero_author_slug %}
+              {% assign _hero_first_author = site.data.authors[_hero_first_slug] %}
+              {% if _hero_first_author.image %}
+              <img src="{{ _hero_first_author.image | relative_url }}" alt="{{ _hero_first_author.name }}" class="card-avatar" width="24" height="24" loading="eager" style="border-radius:50%;object-fit:cover;">
+              {% else %}
+              <div class="card-avatar card-avatar--initials">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>
+              </div>
+              {% endif %}
+              <div class="card-meta-info">
+                <span class="card-author">{% include author-byline.html author=_hero_author_slug link="false" %}</span>
+                <span class="card-date">{{ _hero.date | date: "%-d %b %Y" }}</span>
+              </div>
+            </div>
+            <span class="hero-read-cta">Read now →</span>
+          </div>
+        </article>
+      </a>
+    </div>
+    {% endif %}
+
+  </div><!-- /.hero -->
+</section>
+
+<!-- FEATURED POSTS -->
+{% assign featured_posts = site.posts | where: "featured", true | limit: 4 %}
+{% if featured_posts.size > 0 %}
+<section class="featured-section">
+  <div class="featured-inner">
+
+    <div class="section-header">
+      <h2 class="section-title">Featured stories</h2>
+      <a href="{{ '/archive/' | relative_url }}" class="section-link">View all →</a>
+    </div>
+
+    <div class="featured-grid">
+      {% for post in featured_posts %}
+      {% include post-card.html post=post %}
+      {% endfor %}
+    </div><!-- /.featured-grid -->
+
+  </div><!-- /.featured-inner -->
+</section>
+{% endif %}
+
+<!-- TOPICS -->
+{% assign all_cats = site.categories %}
+{% if all_cats.size > 0 %}
+<section class="topics-section">
+  <div class="topics-inner">
+
+    <div class="section-header">
+      <h2 class="section-title">Browse by topic</h2>
+    </div>
+
+    <div class="topics-scroll" role="list">
+      {% for category in all_cats limit: 12 %}
+      <a href="{{ '/topic/' | append: category[0] | downcase | replace: ' ', '-' | relative_url }}/" class="topic-chip" role="listitem">
+        {{ category[0] }}
+        <span class="topic-count">{{ category[1].size }}</span>
+      </a>
+      {% endfor %}
+    </div>
+
+  </div><!-- /.topics-inner -->
+</section>
+{% endif %}
+
+<!-- LATEST ARTICLES -->
+<section class="posts-section">
+  <div class="posts-section-inner">
+
+    <div class="section-header">
+      <h2 class="section-title">Latest articles</h2>
+      <a href="{{ '/archive/' | relative_url }}" class="section-link">View archive →</a>
+    </div>
+
+    <div class="posts-grid">
+      {% for post in paginator.posts %}
+      {% include post-card.html post=post %}
+      {% endfor %}
+    </div>
+
+    {% include pagination.html %}
+
+  </div><!-- /.posts-section-inner -->
+</section>
