@@ -59,13 +59,16 @@ export const REGISTRY = [
 
   // ── KaTeX (inline and display mathematics) ─────────────────────────────────
   //   Front matter: math: true  →  body class tag-hash-math
-  //   Also auto-detected from $ signs in content and .math-* elements.
+  //   Also auto-detected from .math-* elements or display-math $$ delimiters.
+  //   NOTE: Single $ is intentionally NOT auto-detected — it triggers falsely
+  //   on currency values (e.g. "$50 billion"). Use math: true in front matter
+  //   for any post with LaTeX, or $$...$$ display math will trigger it.
   {
     id: 'math',
     detect: (content) =>
       document.body.classList.contains('tag-hash-math') ||
       !!document.querySelector('.math, .math-inline, .math-display') ||
-      !!(content?.textContent.includes('$')),
+      !!(content?.textContent.includes('$$')),
     cdn: {
       styles:  ['https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.css'],
       scripts: [
@@ -121,6 +124,26 @@ export const REGISTRY = [
     selector: '[data-viz]',
     render:   renderEChartsEl,
     update:   updateEChart,
+  },
+
+  // ── ECharts GL (3D charts — scatter3D, bar3D, surface, globe) ─────────────
+  //   Front matter: gl: true  →  body class tag-hash-gl
+  //   MUST come after the echarts entry so echarts.min.js loads first.
+  //   No selector/render — GL extends the global echarts object; inline scripts
+  //   using scatter3D, grid3D, etc. work automatically once this loads.
+  //
+  //   Usage: add gl: true to front matter alongside viz: true.
+  {
+    id: 'echarts-gl',
+    detect: () => document.body.classList.contains('tag-hash-gl'),
+    cdn: {
+      styles:  [],
+      scripts: ['https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js'],
+    },
+    init:     null,
+    selector: null,
+    render:   null,
+    update:   null,
   },
 
   // ── Leaflet (interactive maps, no API key required) ───────────────────────────

@@ -481,6 +481,7 @@ updated: 2026-03-15
 # Viz flags — set all that apply
 math: true
 viz: true
+gl: true            # ECharts GL: scatter3D, bar3D, surface — requires viz: true too
 story: true         # Loads Scrollama for scrollytelling sections
 ---
 ```
@@ -1732,6 +1733,7 @@ series_order: 1
 math: true
 diagram: true
 viz: true
+gl: true                       # ECharts GL: adds scatter3D, bar3D, surface — requires viz: true too
 d3: true
 leaflet: true
 geo: true
@@ -1781,4 +1783,79 @@ graph LR; A-->B-->C
 
 <!-- Mapbox map -->
 <div data-map="london" data-token="pk.eyJ..." style="height:400px;"></div>
+
+<!-- ECharts GL 3D chart (requires gl: true in front matter) -->
+<script type="module">
+while (!window.echarts) await new Promise(r => setTimeout(r, 50));
+const chart = window.echarts.init(document.getElementById('my-3d-chart'));
+chart.setOption({
+  xAxis3D: { type: 'value' }, yAxis3D: { type: 'value' }, zAxis3D: { type: 'value' },
+  grid3D: {},
+  series: [{ type: 'scatter3D', data: [[0,0,0],[1,1,1]] }]
+});
+</script>
 ```
+
+---
+
+## Appendix: known rendering problems and fixes
+
+### Problem: ECharts 3D charts render blank (scatter3D, bar3D, surface)
+
+**Symptom:** Post has `scatter3D`, `bar3D`, `line3D`, `surface`, or `grid3D` in the chart options but the chart container is empty. No JavaScript error — ECharts silently ignores unknown series types without the GL extension.
+
+**Cause:** The 3D chart types require the **ECharts GL** extension (`echarts-gl.min.js`), a separate library not included in base `echarts.min.js`.
+
+**Fix:** Add `gl: true` to the post's front matter alongside `viz: true`:
+
+```yaml
+viz: true
+gl: true   # ← required for scatter3D, bar3D, surface, grid3D, etc.
+```
+
+The registry entry for `echarts-gl` is ordered after `echarts` in `viz-registry.js`, ensuring the base library loads first.
+
+---
+
+### Problem: Currency dollar signs render as broken math (KaTeX false-positive)
+
+**Symptom:** A post containing dollar amounts like `$50 billion` or `$1.2 trillion` shows garbled text with math fonts or KaTeX error markup — even though the post does not declare `math: true`.
+
+**Cause:** The KaTeX registry entry auto-detected any `$` in page content and loaded KaTeX, which then tried to parse currency values as LaTeX math expressions.
+
+**Fix (build process):** `detect` in `viz-registry.js` now only auto-triggers on `$$` (display math delimiters). Single `$` no longer triggers auto-load.
+
+**Rule:** Add `math: true` to front matter for any post containing LaTeX. Do not rely on auto-detection.
+
+---
+
+### Problem: ECharts inline script chart stays blank
+
+**Symptom:** Post has `viz: true` and a custom `<script type="module">` block with inline ECharts, but the chart remains empty.
+
+**Cause:** Inline script accesses `echarts` before `core.js` has fetched it from CDN, or uses the `typeof echarts !== 'undefined'` poll form instead of the canonical `!window.echarts`.
+
+**Fix:** Use this exact boilerplate:
+
+```html
+<script type="module">
+while (!window.echarts) await new Promise(r => setTimeout(r, 50));
+
+const chart = window.echarts.init(document.getElementById('my-chart'));
+// ... chart setup ...
+</script>
+```
+
+- `type="module"` is required (enables top-level `await`)
+- `viz: true` is required in front matter (tells core.js to load ECharts)
+- Use `window.echarts`, not bare `echarts`
+
+---
+
+### Problem: Ground track / geo chart shows lines but no map background
+
+**Symptom:** A post uses ECharts' `geo` coordinate system but the map background is blank grey.
+
+**Cause:** `echarts.registerMap('world', { type: 'FeatureCollection', features: [] })` was called with an empty GeoJSON placeholder.
+
+**Fix (preferred):** Convert to a cartesian2d chart. Use `xAxis` for longitude (−180 to 180) and `yAxis` for latitude (−90 to 90). The `[lon, lat]` data format maps directly. Add `markLine` reference lines for the equator and latitude bounds. Remove the `registerMap` call entirely.
