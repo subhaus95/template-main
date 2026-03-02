@@ -89,7 +89,31 @@ layout: default
 </section>
 {% endif %}
 
-<!-- TOPICS -->
+<!-- STREAMS or TOPICS -->
+{% if site.streams %}
+<section class="topics-section">
+  <div class="topics-inner">
+
+    <div class="section-header">
+      <h2 class="section-title">{{ site.streams_heading | default: "What's here" }}</h2>
+    </div>
+
+    <div class="streams-grid">
+      {% for stream in site.streams %}
+      <a href="{{ stream.url | relative_url }}" class="stream-card">
+        <div class="stream-card-body">
+          <div class="stream-card-label">{{ stream.label }}</div>
+          <h3 class="stream-card-title">{{ stream.title }}</h3>
+          <p class="stream-card-desc">{{ stream.description }}</p>
+          <span class="stream-card-cta">{{ stream.cta | default: "Browse →" }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+  </div><!-- /.topics-inner -->
+</section>
+{% else %}
 {% assign all_cats = site.categories %}
 {% if all_cats.size > 0 %}
 <section class="topics-section">
@@ -110,6 +134,7 @@ layout: default
 
   </div><!-- /.topics-inner -->
 </section>
+{% endif %}
 {% endif %}
 
 <!-- LATEST ARTICLES -->

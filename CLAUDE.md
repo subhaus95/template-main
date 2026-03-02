@@ -177,9 +177,24 @@ Adding a new visualisation library: create an adapter in `viz/`, register it in 
 | Key | Effect |
 |---|---|
 | `comments: true` | Renders Giscus widget |
-| `series:` + `series_order:` | Enables series navigation (`_includes/series-nav.html`) |
+| `series:` + `series_order:` | Enables series navigation sidebar and breadcrumb |
+| `cluster:` + `cluster_title:` | Groups essays on series page; shown in essay breadcrumb |
+| `difficulty:` | Integer 1–5; renders badge in essay hero and on series page |
+| `math_core:` | Array of strings; renders prerequisites block in essay hero |
+| `featured: true` | Includes post in featured section on home page |
 | `tag-hash-math` in `tags:` | Triggers KaTeX rendering |
 | `tag-hash-viz` in `tags:` | Triggers viz library detection |
+
+All curriculum-specific keys (`difficulty`, `math_core`, `cluster`, `cluster_title`) are conditional — they render nothing on sites that don't use them.
+
+### Key includes
+
+| Include | Purpose |
+|---|---|
+| `essay-hero.html` | Essay header with breadcrumb, title, difficulty, prerequisites, meta |
+| `essay-next.html` | "Continue reading" block — finds next post by `series_order + 1` |
+| `series-nav.html` | Sidebar list of all posts in the same series |
+| `post-card.html` | Card used in home, archive, tag listing pages |
 
 ### `_config.yml` site-level options
 
@@ -193,6 +208,10 @@ Adding a new visualisation library: create an adapter in `viz/`, register it in 
 | `fonts_url` | Override Google Fonts URL |
 | `tokens_css` | Optional extra CSS loaded after brand file |
 | `navigation` / `secondary_navigation` | Header nav links |
+| `hero_heading` | Overrides site title in home page hero |
+| `hero_subheading` | Overrides site description in home page hero |
+| `streams` | List of stream cards shown instead of topic chip cloud (see ROADMAP.md) |
+| `streams_heading` | Heading above the stream cards block |
 
 ### Static search
 
