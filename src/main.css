@@ -1509,6 +1509,76 @@ footer {
 .difficulty-badge--5 { color: #dc2626; }
 
 /* ============================================================================
+   Series page — difficulty filter + completion indicators
+   ============================================================================ */
+
+/* Filter bar */
+.difficulty-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 0 28px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+
+.difficulty-filter-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-right: 4px;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--bg);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.filter-btn:hover { border-color: var(--text-3); color: var(--text); }
+.filter-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+.filter-btn--1.active  { background: #059669; border-color: #059669; color: #fff; }
+.filter-btn--2.active  { background: #0284c7; border-color: #0284c7; color: #fff; }
+.filter-btn--3.active  { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+.filter-btn--4.active  { background: #ea580c; border-color: #ea580c; color: #fff; }
+.filter-btn--5.active  { background: #dc2626; border-color: #dc2626; color: #fff; }
+
+/* CSS filtering — hide non-matching essays */
+[data-filter="1"] .cluster-essay-item:not([data-difficulty="1"]),
+[data-filter="2"] .cluster-essay-item:not([data-difficulty="2"]),
+[data-filter="3"] .cluster-essay-item:not([data-difficulty="3"]),
+[data-filter="4"] .cluster-essay-item:not([data-difficulty="4"]),
+[data-filter="5"] .cluster-essay-item:not([data-difficulty="5"]) { display: none; }
+
+/* Hide cluster sections that have no matching essays when a filter is active */
+[data-filter="1"] .cluster-section:not(:has(.cluster-essay-item[data-difficulty="1"])),
+[data-filter="2"] .cluster-section:not(:has(.cluster-essay-item[data-difficulty="2"])),
+[data-filter="3"] .cluster-section:not(:has(.cluster-essay-item[data-difficulty="3"])),
+[data-filter="4"] .cluster-section:not(:has(.cluster-essay-item[data-difficulty="4"])),
+[data-filter="5"] .cluster-section:not(:has(.cluster-essay-item[data-difficulty="5"])) { display: none; }
+
+/* Completion indicator on series page */
+.cluster-essay-item--done .cluster-essay-num {
+  color: #059669;
+}
+
+.cluster-essay-item--done .cluster-essay-title {
+  color: var(--text-2);
+}
+
+/* ============================================================================
    Pagination
    ============================================================================ */
 
