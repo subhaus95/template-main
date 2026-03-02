@@ -132,4 +132,32 @@ Alpine.data('carousel', () => ({
   goTo(i) { this.idx = i; },
 }));
 
+// ── Essay progress (mark as complete) ──────────────────────────────────────────
+// Used on essay pages (toggle) and series page (read-only indicator).
+// localStorage key: 'wh-complete:<page-url>'
+
+Alpine.data('essayProgress', (url) => ({
+  completed: false,
+
+  init() {
+    this.completed = localStorage.getItem('wh-complete:' + url) === '1';
+  },
+
+  toggle() {
+    this.completed = !this.completed;
+    if (this.completed) {
+      localStorage.setItem('wh-complete:' + url, '1');
+    } else {
+      localStorage.removeItem('wh-complete:' + url);
+    }
+  },
+}));
+
+// ── Difficulty filter ───────────────────────────────────────────────────────────
+// Used on series page. Sets data-filter attribute on wrapper; CSS does the hiding.
+
+Alpine.data('difficultyFilter', () => ({
+  filter: 0,
+}));
+
 Alpine.start();

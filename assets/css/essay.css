@@ -558,6 +558,57 @@
   margin-bottom: 8px;
 }
 
+/* ── Mark as complete ───────────────────────────────────────────────────────── */
+
+.essay-complete {
+  margin-top: 48px;
+}
+
+.essay-complete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: 1px solid var(--border, #E4E2DF);
+  border-radius: 100px;
+  background: var(--bg2, #F7F6F3);
+  color: var(--text-2, #6B6860);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.essay-complete-btn:hover {
+  border-color: var(--accent, #1B6FEE);
+  color: var(--accent, #1B6FEE);
+  background: var(--bg, #fff);
+}
+
+.essay-complete-btn--done {
+  border-color: #059669;
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.essay-complete-btn--done:hover {
+  border-color: #dc2626;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+[data-theme="dark"] .essay-complete-btn--done {
+  background: hsl(152 50% 10%);
+  border-color: #059669;
+  color: #34d399;
+}
+
+[data-theme="dark"] .essay-complete-btn--done:hover {
+  background: hsl(0 50% 10%);
+  border-color: #dc2626;
+  color: #f87171;
+}
+
 /* ── Essay next ─────────────────────────────────────────────────────────────── */
 
 .essay-next {
