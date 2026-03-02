@@ -37,7 +37,7 @@
       {% if page.categories.first %}
       <a href="{{ '/topic/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="essay-tag-label">{{ page.categories.first }}</a>
       {% endif %}
-      {% if page.difficulty %}
+      {% if page.difficulty and page.categories contains 'modeling' %}
       <span class="difficulty-badge difficulty-badge--{{ page.difficulty }}">Level {{ page.difficulty }}</span>
       {% endif %}
     </div>
