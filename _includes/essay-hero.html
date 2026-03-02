@@ -51,7 +51,6 @@
     {% if page.math_core %}
     <p class="essay-prereqs"><span class="essay-prereqs-label">Prerequisites:</span> {% for item in page.math_core %}{{ item | replace: "-", " " }}{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
     {% endif %}
-    {% endif %}
 
     <div class="essay-meta">
       <div class="essay-authors">
