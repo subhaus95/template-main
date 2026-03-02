@@ -40,12 +40,11 @@ No backend required. Progress is per-browser; not synced across devices. Accepta
 3–5 Alpine.js questions → localStorage stores result → recommend a starting path.
 Entry point: the Start Here page or a dedicated `/start/` form.
 
-### B2. Mark as complete
-Per-essay checkbox stored in localStorage. Series page reads these to show progress indicators.
-Key: `essay-complete-{slug}`. Resets gracefully if localStorage is cleared.
+### B2. Mark as complete ✓
+Per-essay checkbox stored in localStorage under `wh-complete:{url}`. Series page reads these to show completion indicators. Toggle button rendered by `essay-complete.html` include; Alpine component `essayProgress` in `src/main.js`.
 
-### B3. Difficulty filter on homepage grid
-Alpine.js filter on the posts grid by `data-difficulty` attribute. No page reload.
+### B3. Difficulty filter on series page ✓
+Alpine.js `difficultyFilter` component on the series page wrapper. CSS attribute selectors (`[data-filter="N"] .cluster-essay-item:not([data-difficulty="N"])`) hide non-matching essays without per-item Alpine instances. `:has()` CSS hides empty cluster sections. Filter applies to modeling essays only — other categories always render at `data-difficulty="0"`.
 
 ---
 
@@ -84,9 +83,14 @@ Keys currently rendered by the template (conditional — safe for sites that don
 |---|---|---|
 | `series` | essay-hero breadcrumb, series-nav | Enables series nav sidebar |
 | `series_order` | essay-hero breadcrumb, essay-next | Integer; used to find next essay |
+| `series_number` | series landing pages, Start Here page | Integer; used by `where: "series_number", N` to look up series landing pages |
 | `cluster` | series page grouping | Letter or short code |
 | `cluster_title` | essay-hero breadcrumb, series page | Human-readable cluster name |
-| `difficulty` | essay-hero badge, series page, post cards | Integer 1–5 |
-| `math_core` | essay-hero prerequisites block | Array of strings |
+| `difficulty` | essay-hero badge, series page | Integer 1–5; badge only rendered for `modeling` category posts |
+| `math_core` | essay-hero prerequisites block | Array of strings; rendered as comma-separated text |
 | `featured` | home.html featured section | Boolean |
 | `streams` | home.html two-stream block | Site-level config list |
+| `footer_tagline` | footer brand column | Falls back to `site.description` |
+| `footer_topics` | footer col 2 | List of `{title, url}`; falls back to auto-generated categories |
+| `footer_topics_title` | footer col 2 heading | Default `"Topics"` |
+| `footer_nav_title` | footer col 3 heading | Default `"Company"` |
