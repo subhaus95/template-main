@@ -178,9 +178,10 @@ Adding a new visualisation library: create an adapter in `viz/`, register it in 
 |---|---|
 | `comments: true` | Renders Giscus widget |
 | `series:` + `series_order:` | Enables series navigation sidebar and breadcrumb |
+| `series_number:` | Integer identifier for series landing pages; used by Start Here page to look up series by number |
 | `cluster:` + `cluster_title:` | Groups essays on series page; shown in essay breadcrumb |
-| `difficulty:` | Integer 1–5; renders badge in essay hero and on series page |
-| `math_core:` | Array of strings; renders prerequisites block in essay hero |
+| `difficulty:` | Integer 1–5; renders badge in essay hero and on series page (modeling category only) |
+| `math_core:` | Array of strings; renders comma-separated prerequisites block in essay hero |
 | `featured: true` | Includes post in featured section on home page |
 | `tag-hash-math` in `tags:` | Triggers KaTeX rendering |
 | `tag-hash-viz` in `tags:` | Triggers viz library detection |
@@ -207,11 +208,19 @@ All curriculum-specific keys (`difficulty`, `math_core`, `cluster`, `cluster_tit
 | `mapbox_token` | Mapbox public token |
 | `fonts_url` | Override Google Fonts URL |
 | `tokens_css` | Optional extra CSS loaded after brand file |
-| `navigation` / `secondary_navigation` | Header nav links |
+| `navigation` / `secondary_navigation` | Header nav and footer "Site" column links |
 | `hero_heading` | Overrides site title in home page hero |
 | `hero_subheading` | Overrides site description in home page hero |
 | `streams` | List of stream cards shown instead of topic chip cloud (see ROADMAP.md) |
 | `streams_heading` | Heading above the stream cards block |
+| `footer_tagline` | Footer brand column tagline; falls back to `site.description` |
+| `footer_topics_title` | Footer col 2 heading; default `"Topics"` |
+| `footer_topics` | List of `{title, url}` for footer col 2; falls back to auto-generated categories |
+| `footer_nav_title` | Footer col 3 heading; default `"Company"` |
+
+### Alpine.js in pages — use `.html` not `.md`
+
+Any `_pages/` file that contains Alpine.js attributes (`:class`, `@click`, `x-data`, `:data-*`) **must use a `.html` extension**. Kramdown (Jekyll's Markdown parser) does not recognise HTML blocks whose opening tag contains colon-prefixed attributes, and renders them as escaped text instead of HTML. A `.html` page goes through Liquid only and is unaffected.
 
 ### Static search
 
