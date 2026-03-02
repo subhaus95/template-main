@@ -217,6 +217,74 @@
   white-space: nowrap;
 }
 
+/* ── Breadcrumb ─────────────────────────────────────────────────────────────── */
+
+.essay-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  font-size: 0.75rem;
+  color: var(--text-3, #9C9890);
+  margin-bottom: 16px;
+}
+
+.essay-breadcrumb-link {
+  color: var(--accent, #1B6FEE);
+  text-decoration: none;
+  text-transform: capitalize;
+}
+
+.essay-breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+.essay-breadcrumb-sep {
+  opacity: 0.5;
+}
+
+.essay-breadcrumb-cluster,
+.essay-breadcrumb-pos {
+  color: var(--text-3, #9C9890);
+}
+
+/* ── Hero label row (category + difficulty) ─────────────────────────────────── */
+
+.essay-hero-labels {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* ── Prerequisites block ────────────────────────────────────────────────────── */
+
+.essay-prereqs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.essay-prereqs-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-3, #9C9890);
+  margin-right: 2px;
+}
+
+.essay-prereq-chip {
+  font-size: 0.75rem;
+  color: var(--text-2, #6B6860);
+  background: var(--bg3, #F0EFEC);
+  padding: 2px 8px;
+  border-radius: 100px;
+  text-transform: capitalize;
+}
+
 /* ── Content ────────────────────────────────────────────────────────────────── */
 
 /* essay-content inherits .gh-content styles from main.css */
@@ -499,6 +567,84 @@
   text-transform: uppercase;
   color: var(--accent, #1B6FEE);
   margin-bottom: 8px;
+}
+
+/* ── Essay next ─────────────────────────────────────────────────────────────── */
+
+.essay-next {
+  margin: 48px 0 0;
+  padding: 24px;
+  background: var(--bg2, #F7F6F3);
+  border: 1px solid var(--border, #E4E2DF);
+  border-radius: var(--radius, 12px);
+}
+
+.essay-next-label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-3, #9C9890);
+  margin-bottom: 12px;
+}
+
+.essay-next-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+  color: var(--text, #111110);
+}
+
+.essay-next-link:hover .essay-next-title {
+  color: var(--accent, #1B6FEE);
+}
+
+.essay-next-link:hover .essay-next-arrow {
+  transform: translateX(3px);
+}
+
+.essay-next-num {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--accent, #1B6FEE);
+  background: var(--bg3, #ECEAE6);
+  border-radius: 50%;
+}
+
+.essay-next-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.essay-next-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  transition: color 0.15s;
+}
+
+.essay-next-sub {
+  font-size: 0.8125rem;
+  color: var(--text-2, #6B6860);
+  line-height: 1.4;
+}
+
+.essay-next-arrow {
+  flex-shrink: 0;
+  color: var(--text-3, #9C9890);
+  transition: transform 0.15s;
 }
 
 /* ── Endnotes ───────────────────────────────────────────────────────────────── */

@@ -1,0 +1,28 @@
+{% comment %}
+  essay-next.html — "Continue reading" block for series essays.
+  Finds the next post in the same series by series_order + 1.
+  Renders nothing if the post has no series, or if there is no next essay.
+{% endcomment %}
+{% if page.series and page.series_order %}
+  {% assign _next_order = page.series_order | plus: 1 %}
+  {% assign _series_posts = site.posts | where: "series", page.series %}
+  {% assign _next_post = _series_posts | where: "series_order", _next_order | first %}
+  {% if _next_post %}
+  <aside class="essay-next">
+    <span class="essay-next-label">Next in series</span>
+    <a href="{{ _next_post.url | relative_url }}" class="essay-next-link">
+      <span class="essay-next-num">{{ _next_order }}</span>
+      <div class="essay-next-text">
+        <span class="essay-next-title">{{ _next_post.title }}</span>
+        {% if _next_post.subtitle %}
+        <span class="essay-next-sub">{{ _next_post.subtitle }}</span>
+        {% endif %}
+      </div>
+      <svg class="essay-next-arrow" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </a>
+  </aside>
+  {% endif %}
+{% endif %}

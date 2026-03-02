@@ -17,14 +17,44 @@
   {% endif %}
 
   <div class="essay-hero-body">
-    {% if page.categories.first %}
-    <a href="{{ '/topic/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="essay-tag-label">{{ page.categories.first }}</a>
+
+    {% comment %}Series breadcrumb{% endcomment %}
+    {% if page.series %}
+    <nav class="essay-breadcrumb" aria-label="Series position">
+      <a href="{{ '/series/' | relative_url }}" class="essay-breadcrumb-link">{{ page.series | replace: "-", " " | capitalize }}</a>
+      {% if page.cluster_title %}
+      <span class="essay-breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="essay-breadcrumb-cluster">{{ page.cluster_title }}</span>
+      {% endif %}
+      {% if page.series_order %}
+      <span class="essay-breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="essay-breadcrumb-pos">Essay {{ page.series_order }}</span>
+      {% endif %}
+    </nav>
     {% endif %}
+
+    <div class="essay-hero-labels">
+      {% if page.categories.first %}
+      <a href="{{ '/topic/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="essay-tag-label">{{ page.categories.first }}</a>
+      {% endif %}
+      {% if page.difficulty %}
+      <span class="difficulty-badge difficulty-badge--{{ page.difficulty }}">Level {{ page.difficulty }}</span>
+      {% endif %}
+    </div>
 
     <h1 class="essay-title">{{ page.title }}</h1>
 
     {% if page.excerpt %}
     <p class="essay-excerpt">{{ page.excerpt | strip_html }}</p>
+    {% endif %}
+
+    {% if page.math_core %}
+    <div class="essay-prereqs">
+      <span class="essay-prereqs-label">Prerequisites</span>
+      {% for item in page.math_core %}
+      <span class="essay-prereq-chip">{{ item | replace: "-", " " }}</span>
+      {% endfor %}
+    </div>
     {% endif %}
 
     <div class="essay-meta">
