@@ -260,29 +260,18 @@
 /* ── Prerequisites block ────────────────────────────────────────────────────── */
 
 .essay-prereqs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 20px;
+  font-size: 0.8125rem;
+  color: var(--text-2, #6B6860);
+  margin: 0 0 20px;
+  text-transform: capitalize;
 }
 
 .essay-prereqs-label {
-  font-size: 0.6875rem;
   font-weight: 600;
-  letter-spacing: 0.07em;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--text-3, #9C9890);
-  margin-right: 2px;
-}
-
-.essay-prereq-chip {
-  font-size: 0.75rem;
-  color: var(--text-2, #6B6860);
-  background: var(--bg3, #F0EFEC);
-  padding: 2px 8px;
-  border-radius: 100px;
-  text-transform: capitalize;
+  font-size: 0.6875rem;
 }
 
 /* ── Content ────────────────────────────────────────────────────────────────── */
