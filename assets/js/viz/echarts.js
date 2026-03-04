@@ -75,9 +75,10 @@ export function renderEChart(el, options) {
   const chart = echarts.init(el, 'loom', { renderer: 'canvas' });
   chart.setOption(options);
 
-  // Keep chart correctly sized when the container resizes
+  // Keep chart correctly sized when the container resizes.
+  // requestAnimationFrame avoids the "ResizeObserver loop" warning in Safari.
   const observer = new ResizeObserver(() => {
-    if (!chart.isDisposed()) chart.resize();
+    requestAnimationFrame(() => { if (!chart.isDisposed()) chart.resize(); });
   });
   observer.observe(el);
 
