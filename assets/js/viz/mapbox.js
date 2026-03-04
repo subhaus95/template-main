@@ -130,12 +130,25 @@ export function renderMap(el, config = {}) {
     config.style ??
     'mapbox://styles/mapbox/outdoors-v12';
 
+  // Mapbox GL JS v3 defaults to globe projection; use mercator for essay maps
+  // unless the author explicitly requests globe via data-projection="globe".
+  const projection = el.dataset.projection ?? config.projection ?? 'mercator';
+
   let map;
   try {
-    map = new mapboxgl.Map({ container: el, style, center, zoom, pitch, bearing });
+    map = new mapboxgl.Map({ container: el, style, center, zoom, pitch, bearing, projection });
   } catch (err) {
     showError(el, 'Map failed to initialise. Check the browser console for details.');
     return null;
+  }
+
+  // Mapbox GL JS v3 enables fog/atmosphere by default. Disable it for essay
+  // maps — it washes out features at low zoom levels and with non-zero pitch.
+  // Terrain maps that explicitly opt in can re-enable fog after style.load.
+  if (el.dataset.terrain === undefined) {
+    map.on('style.load', () => {
+      try { map.setFog(null); } catch (_) { /* style may not support fog */ }
+    });
   }
 
   // 3D terrain — enabled by data-terrain (presence) or data-terrain="1.5" (exaggeration)
