@@ -120,7 +120,7 @@ export const REGISTRY = [
       !!document.querySelector('[data-viz]'),
     cdn: {
       styles:  [],
-      scripts: ['https://cdn.jsdelivr.net/npm/echarts@5.4.4/dist/echarts.min.js'],
+      scripts: ['https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js'],
     },
     init:     null,
     selector: '[data-viz]',
