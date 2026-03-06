@@ -29,6 +29,7 @@
 
     <div class="card-meta">
       {% assign _card_author_slug = include.post.author | default: site.author %}
+      {% unless site.hide_author %}
       {% assign _card_author_data = site.data.authors[_card_author_slug] %}
       {% if _card_author_data.image %}
       <img src="{{ _card_author_data.image | relative_url }}" alt="{{ _card_author_data.name }}" class="card-avatar" width="24" height="24" loading="lazy" style="border-radius:50%;object-fit:cover;">
@@ -39,8 +40,9 @@
         </svg>
       </div>
       {% endif %}
+      {% endunless %}
       <div class="card-meta-info">
-        <span class="card-author">{% include author-byline.html author=_card_author_slug %}</span>
+        {% unless site.hide_author %}<span class="card-author">{% include author-byline.html author=_card_author_slug %}</span>{% endunless %}
         <span class="card-date">{{ include.post.date | date: "%-d %b %Y" }} · {{ include.post.content | number_of_words | divided_by: 200 | plus: 1 }} min read</span>
       </div>
     </div>

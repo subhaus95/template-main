@@ -53,12 +53,14 @@
     {% endif %}
 
     <div class="essay-meta">
+      {% unless site.hide_author %}
       <div class="essay-authors">
         <span class="essay-author">
           {% assign _essay_author_slug = page.author | default: site.author %}
           {% include author-byline.html author=_essay_author_slug %}
         </span>
       </div>
+      {% endunless %}
       <div class="essay-meta-secondary">
         <time class="essay-date" datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%-d %b %Y" }}</time>
         {% assign _updated = page.updated | default: page.last_modified_at %}

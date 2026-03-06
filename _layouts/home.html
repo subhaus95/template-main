@@ -46,6 +46,7 @@ layout: default
               {% assign _hero_author_slug = _hero.author | default: site.author %}
               {% assign _hero_first_slug = _hero_author_slug | first | default: _hero_author_slug %}
               {% assign _hero_first_author = site.data.authors[_hero_first_slug] %}
+              {% unless site.hide_author %}
               {% if _hero_first_author.image %}
               <img src="{{ _hero_first_author.image | relative_url }}" alt="{{ _hero_first_author.name }}" class="card-avatar" width="24" height="24" loading="eager" style="border-radius:50%;object-fit:cover;">
               {% else %}
@@ -53,8 +54,9 @@ layout: default
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>
               </div>
               {% endif %}
+              {% endunless %}
               <div class="card-meta-info">
-                <span class="card-author">{% include author-byline.html author=_hero_author_slug link="false" %}</span>
+                {% unless site.hide_author %}<span class="card-author">{% include author-byline.html author=_hero_author_slug link="false" %}</span>{% endunless %}
                 <span class="card-date">{{ _hero.date | date: "%-d %b %Y" }}</span>
               </div>
             </div>

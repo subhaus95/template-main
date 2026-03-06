@@ -20,8 +20,9 @@ layout: default
       {% endif %}
 
       <div class="post-meta">
+        {% assign _post_author_slug = page.author | default: site.author %}
+        {% unless site.hide_author %}
         <span class="post-meta-author" style="display:flex;align-items:center;gap:8px;">
-          {% assign _post_author_slug = page.author | default: site.author %}
           {% assign _post_author_data = site.data.authors[_post_author_slug] %}
           {% if _post_author_data.image %}
           <img src="{{ _post_author_data.image | relative_url }}" alt="{{ _post_author_data.name }}" class="post-meta-avatar" width="40" height="40">
@@ -33,6 +34,7 @@ layout: default
           <span class="post-meta-name">{% include author-byline.html author=_post_author_slug %}</span>
         </span>
         <span class="post-meta-divider" aria-hidden="true">·</span>
+        {% endunless %}
         <time class="post-meta-date" datetime="{{ page.date | date: '%Y-%m-%d' }}">
           {{ page.date | date: "%-d %b %Y" }}
         </time>
@@ -72,7 +74,7 @@ layout: default
     </section>
   </div><!-- /.post-content-wrap -->
 
-  {% include author-card.html author=_post_author_slug %}
+  {% unless site.hide_author %}{% include author-card.html author=_post_author_slug %}{% endunless %}
   {% include subscribe-cta.html %}
   {% include giscus.html %}
   {% include related-posts.html %}
