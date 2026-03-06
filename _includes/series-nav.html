@@ -1,28 +1,65 @@
 {% if page.series %}
 {% assign series_posts = site.posts | where: "series", page.series | sort: "series_order" %}
 {% if series_posts.size > 1 %}
-<nav class="series-nav" aria-label="Series: {{ page.series }}">
+
+{% comment %}Scope to current cluster when the post has one{% endcomment %}
+{% if page.cluster %}
+  {% assign nav_posts = series_posts | where: "cluster", page.cluster | sort: "series_order" %}
+{% else %}
+  {% assign nav_posts = series_posts %}
+{% endif %}
+
+{% comment %}
+  Derive cluster label and title from front matter.
+  Two naming patterns exist:
+    1. cluster: "AL — Land Use and Demographic Dynamics"   (title embedded)
+    2. cluster: "T"  +  cluster_title: "Active Ranging Systems"
+{% endcomment %}
+{% assign _cluster_parts = page.cluster | split: " — " %}
+{% if _cluster_parts.size > 1 %}
+  {% assign _cluster_code = _cluster_parts | first %}
+  {% assign _cluster_name = _cluster_parts | last %}
+{% else %}
+  {% assign _cluster_code = page.cluster %}
+  {% assign _cluster_name = page.cluster_title %}
+{% endif %}
+
+{% comment %}Find the series syllabus page to link to{% endcomment %}
+{% assign _series_page = site.pages | where: "series_key", page.series | first %}
+
+<nav class="series-nav" aria-label="Series navigation">
+
   <div class="series-nav-header">
-    <span class="series-nav-label">Series</span>
-    <span class="series-nav-title">{{ page.series }}</span>
+    {% if _cluster_code %}<span class="series-nav-label">{{ _cluster_code }}</span>{% endif %}
+    {% if _cluster_name %}<span class="series-nav-title">{{ _cluster_name }}</span>{% endif %}
   </div>
+
   <ol class="series-nav-list">
-    {% for post in series_posts %}
+    {% for post in nav_posts %}
     <li class="series-nav-item{% if post.url == page.url %} series-nav-item--current{% endif %}">
       {% if post.url == page.url %}
       <span class="series-nav-link series-nav-link--current" aria-current="page">
-        <span class="series-nav-number">{{ forloop.index }}</span>
+        <span class="series-nav-number">{{ post.series_order }}</span>
         {{ post.title }}
       </span>
       {% else %}
       <a href="{{ post.url | relative_url }}" class="series-nav-link">
-        <span class="series-nav-number">{{ forloop.index }}</span>
+        <span class="series-nav-number">{{ post.series_order }}</span>
         {{ post.title }}
       </a>
       {% endif %}
     </li>
     {% endfor %}
   </ol>
+
+  {% if _series_page %}
+  <div class="series-nav-footer">
+    <a href="{{ _series_page.url | relative_url }}" class="series-nav-all">
+      All {{ series_posts.size }} models in series &rarr;
+    </a>
+  </div>
+  {% endif %}
+
 </nav>
 {% endif %}
 {% endif %}
