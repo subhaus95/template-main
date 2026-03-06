@@ -646,16 +646,18 @@ export function renderOilShock(el) {
       heatmapChart.setOption(hmOpts, true);
     } else {
       heatmapChart = renderEChart(heatmapEl, hmOpts);
-      heatmapChart.on('click', ({ data }) => {
-        if (!data) return;
-        const [, regionIdx] = data;
-        selectedRegionId = currentSorted[regionIdx]?.id ?? selectedRegionId;
-        const reg  = REGIONS.find(r => r.id === selectedRegionId) ?? REGIONS[8];
-        const sim2 = simulate(getParams());
-        const chOpts = channelOpts(reg, sim2.regional[reg.id]);
-        if (channelsChart) channelsChart.setOption(chOpts, true);
-        else channelsChart = renderEChart(channelsEl, chOpts);
-      });
+      if (heatmapChart) {
+        heatmapChart.on('click', ({ data }) => {
+          if (!data) return;
+          const [, regionIdx] = data;
+          selectedRegionId = currentSorted[regionIdx]?.id ?? selectedRegionId;
+          const reg  = REGIONS.find(r => r.id === selectedRegionId) ?? REGIONS[8];
+          const sim2 = simulate(getParams());
+          const chOpts = channelOpts(reg, sim2.regional[reg.id]);
+          if (channelsChart) channelsChart.setOption(chOpts, true);
+          else channelsChart = renderEChart(channelsEl, chOpts);
+        });
+      }
     }
 
     // Channel chart
