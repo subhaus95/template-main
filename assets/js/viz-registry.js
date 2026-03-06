@@ -120,7 +120,7 @@ export const REGISTRY = [
       !!document.querySelector('[data-viz]'),
     cdn: {
       styles:  [],
-      scripts: ['https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js'],
+      scripts: ['https://cdn.jsdelivr.net/npm/echarts@5.4.4/dist/echarts.min.js'],
     },
     init:     null,
     selector: '[data-viz]',
@@ -142,7 +142,7 @@ export const REGISTRY = [
       styles:  [],
       scripts: ['https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js'],
     },
-    init:     null,
+    init:     () => { window.__echartsGL = true; },
     selector: null,
     render:   null,
     update:   null,
