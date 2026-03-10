@@ -49,7 +49,7 @@
           {% endfor %}
         {% else %}
           {% for category in site.categories limit: 6 %}
-          <li><a href="{{ '/topic/' | append: category[0] | downcase | replace: ' ', '-' | relative_url }}/">{{ category[0] }}</a></li>
+          <li><a href="{{ '/topics/' | append: category[0] | downcase | replace: ' ', '-' | relative_url }}/">{{ category[0] }}</a></li>
           {% endfor %}
         {% endif %}
       </ul>

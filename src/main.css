@@ -1391,6 +1391,8 @@ footer {
   height: 480px;
   border-radius: var(--radius);
   overflow: hidden;
+  position: relative;
+  z-index: 0; /* creates stacking context — contains Leaflet's internal z-indexes */
 }
 .scene-compare figcaption {
   font-size: 0.8125rem;

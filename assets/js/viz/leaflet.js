@@ -72,7 +72,7 @@ const TILE_PRESETS = {
 const OVERLAY_PRESETS = {
   // ESA WorldCover 2021 — 10 m global land cover classification, free via Terrascope
   worldcover: {
-    url:     'https://services.terrascope.be/wmts/v2?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=WORLDCOVER_2021_MAP&STYLE=default&FORMAT=image/png&TileMatrixSet=GoogleMapsCompatible&TileMatrix={z}&TileRow={y}&TileCol={x}',
+    url:     'https://services.terrascope.be/wmts/v2?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=WORLDCOVER_2021_MAP&STYLE=&FORMAT=image/png&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{z}&TileRow={y}&TileCol={x}',
     attr:    '&copy; <a href="https://esa-worldcover.org/">ESA WorldCover 2021</a> / Terrascope',
     maxZoom: 13,
     opacity: 0.85,

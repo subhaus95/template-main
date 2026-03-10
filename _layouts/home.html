@@ -130,7 +130,7 @@ layout: default
 
     <div class="topics-scroll" role="list">
       {% for category in all_cats limit: 12 %}
-      <a href="{{ '/topic/' | append: category[0] | downcase | replace: ' ', '-' | relative_url }}/" class="topic-chip" role="listitem">
+      <a href="{{ '/topics/' | append: category[0] | downcase | replace: ' ', '-' | relative_url }}/" class="topic-chip" role="listitem">
         {{ category[0] }}
         <span class="topic-count">{{ category[1].size }}</span>
       </a>

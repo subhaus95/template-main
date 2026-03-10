@@ -10,7 +10,7 @@ layout: default
     <div class="post-header-inner">
 
       {% if page.categories.first %}
-      <a href="{{ '/topic/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="post-tag">{{ page.categories.first }}</a>
+      <a href="{{ '/topics/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="post-tag">{{ page.categories.first }}</a>
       {% endif %}
 
       <h1 class="post-title">{{ page.title }}</h1>
