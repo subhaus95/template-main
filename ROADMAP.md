@@ -14,6 +14,39 @@ If the site ever evolves into a proper learning platform (user progress sync, in
 
 ---
 
+## Brand — Franklin Axis visual identity ✓
+
+Implemented as `assets/css/brand-wayward.css` in the waywardhouse site repo. No submodule changes required except the addition of `hero-badge` to `home.html`.
+
+### Type system ✓
+Three-tier Franklin Axis stack: Barlow Condensed (display/headlines), Barlow (body), IBM Plex Mono (labels/metadata/code). Loaded via `fonts_url` in `_config.yml` — the correct per-brand font mechanism. Base token `--font-heading` mapped to the display face so all 30+ template component references pick up Barlow Condensed automatically.
+
+### Colour palette ✓
+EDGE red (`#e02020`) accent, warm near-black/paper surface scale, amber (`#f0a800`) for numeric display on dark surfaces. Red-tinted (`#fde8e8`) callout panels — not full red surfaces.
+
+### Dark mode text legibility ✓
+Secondary and tertiary text tokens set independently for dark mode. `--text-2: #c2c2bc` (was `#9a9a94` — too dim for body text on near-black). `--text-3: #888882` (was `#5a5a56` — genuinely illegible). Documents the pattern for future brands.
+
+### Navigation and footer ✓
+Always-dark nav bar (hardcoded `#0a0a0a`, not `var(--bg)`) with 3px red bottom border. Mono caps navigation links. Matching dark footer with red top border. Approach documented in HOWTO.md §15 as the pattern for always-dark elements.
+
+### Post cards ✓
+Flat — no lift animation, no box shadow. Border flips red on hover. Condensed uppercase card titles (weight 700), mono caps metadata.
+
+### Home page hero ✓
+Black cover band, always dark. 3:2 column grid with 1px dark divider. Massive condensed headline (`clamp(3rem, 7.5vw, 6rem)`, weight 800, line-height 0.85). Condensed uppercase subtitle in muted. Right column: latest post as text-only editorial panel on dark background, no card chrome. 6px red right-edge bar. Stacks cleanly to single column at mobile. `hero-badge` element added to `home.html` (one line, backwards-compatible).
+
+### Section structure ✓
+4px black top rule on section headers. Section titles use the spec-lbl extending-rule pattern: `TITLE ──────────────────── View all →`. Mono caps "view all" links, margin-left separated from the rule. Consistent across all home sections.
+
+### Stream cards ✓
+Full redesign as alternating black/white surface panels (nth-child pattern). White surface for odd cards, near-black (`#0a0a0a`) for even cards. Titles at `clamp(2rem, 3.5vw, 3rem)` weight 800 condensed, line-height 0.9. Both surfaces flip to black on hover. Stack to single column at 640px. The streams section itself loses top/bottom padding — the cards fill edge to edge within the max-width container, framed by a 4px black rule above.
+
+### Lead article treatment ✓
+First card in both `.posts-grid` and `.featured-grid` spans two columns and shifts to horizontal (image left, body right). Title at 2rem. Falls back to stacked column layout at 768px and when no feature image is present (`:has(.card-image--no-feature)`).
+
+---
+
 ## Phase A — Content infrastructure (static, no new tech)
 
 Everything here works within Jekyll + Liquid + existing front matter.
@@ -89,6 +122,7 @@ Keys currently rendered by the template (conditional — safe for sites that don
 | `difficulty` | essay-hero badge, series page | Integer 1–5; badge only rendered for `modeling` category posts |
 | `math_core` | essay-hero prerequisites block | Array of strings; rendered as comma-separated text |
 | `featured` | home.html featured section | Boolean |
+| `hero_badge` | home.html hero band | Mono caps label above headline; defaults to `site.title` |
 | `streams` | home.html two-stream block | Site-level config list |
 | `footer_tagline` | footer brand column | Falls back to `site.description` |
 | `footer_topics` | footer col 2 | List of `{title, url}`; falls back to auto-generated categories |
