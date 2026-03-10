@@ -8,6 +8,9 @@ layout: default
     {% assign _hero = site.posts.first %}
 
     <div class="hero-content">
+      {% if site.hero_badge or site.title %}
+      <div class="hero-badge">{{ site.hero_badge | default: site.title }}</div>
+      {% endif %}
       <h1 class="hero-headline">
         {{ site.hero_heading | default: site.title }}
       </h1>
