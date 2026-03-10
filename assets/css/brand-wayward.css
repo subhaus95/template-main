@@ -858,6 +858,11 @@
   background: #1a1a18;
   border-right-color: #2a2a28;
 }
+/* Odd card title: dark text works on white (light mode) but needs to be
+   light on the dark surface in dark mode */
+[data-brand="wayward"][data-theme="dark"] .stream-card:nth-child(odd) .stream-card-title {
+  color: var(--white);
+}
 
 /* Even cards: black surface (feature/hero) */
 [data-brand="wayward"] .stream-card:nth-child(even) {
