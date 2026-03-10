@@ -24,7 +24,7 @@ layout: default
 
         <div class="archive-item-body">
           {% if post.categories.first %}
-          <a href="{{ '/topic/' | append: post.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="card-tag">{{ post.categories.first }}</a>
+          <a href="{{ '/topics/' | append: post.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="card-tag">{{ post.categories.first }}</a>
           {% endif %}
           <h2 class="archive-title">
             <a href="{{ post.url | relative_url }}">{{ post.title }}</a>

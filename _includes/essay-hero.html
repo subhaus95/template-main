@@ -31,7 +31,7 @@
       {% if _hero_series_page %}
       <a href="{{ _hero_series_page.url | relative_url }}" class="essay-breadcrumb-link">{{ _hero_series_label }}</a>
       {% elsif page.categories.first %}
-      <a href="{{ '/topic/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="essay-breadcrumb-link">{{ _hero_series_label }}</a>
+      <a href="{{ '/topics/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="essay-breadcrumb-link">{{ _hero_series_label }}</a>
       {% else %}
       <span class="essay-breadcrumb-link">{{ _hero_series_label }}</span>
       {% endif %}
@@ -48,7 +48,7 @@
 
     <div class="essay-hero-labels">
       {% if page.categories.first %}
-      <a href="{{ '/topic/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="essay-tag-label">{{ page.categories.first }}</a>
+      <a href="{{ '/topics/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="essay-tag-label">{{ page.categories.first }}</a>
       {% endif %}
       {% if page.difficulty and page.categories contains 'modelling' %}
       <span class="difficulty-badge difficulty-badge--{{ page.difficulty }}">Level {{ page.difficulty }}</span>

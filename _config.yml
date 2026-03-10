@@ -76,7 +76,7 @@ jekyll-archives:
     category: topic
     tag: tag
   permalinks:
-    category: /topic/:name/
+    category: /topics/:name/
     tag: /tag/:name/
 
 pagination:
