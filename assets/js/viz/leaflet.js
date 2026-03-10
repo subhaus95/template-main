@@ -133,6 +133,11 @@ export function renderLeaflet(el, options = {}) {
   });
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
+  // Expose map instance on element so inline essay scripts can access it,
+  // and fire a ready event (bubbles so it can be caught from any ancestor).
+  el._leafletMap = map;
+  el.dispatchEvent(new CustomEvent('leaflet:ready', { bubbles: true, detail: { map } }));
+
   return { map };
 }
 
