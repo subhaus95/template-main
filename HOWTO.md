@@ -11,7 +11,7 @@ A complete reference for building, configuring, and writing content using the Lo
 3. [Local development](#3-local-development)
 4. [Configuration](#4-configuration)
 5. [Writing posts](#5-writing-posts)
-6. [Computational essays](#6-computational-essays)
+6. [Computational essays](#6-computational-essays) — including [References and citations](#references-and-citations)
 7. [Visualisations](#7-visualisations)
 8. [Search](#8-search)
 9. [Navigation](#9-navigation)
@@ -231,12 +231,70 @@ brand: loom                        # loom | paul | qshift | wayward | subhaus
 brand_name: "Loom Collective"      # Full display name
 brand_default_theme: "dark"        # "dark" | "light" — initial theme on first visit
 
-# Override the Google Fonts URL for brand-specific typefaces (optional).
+# Google Fonts URL for brand-specific typefaces.
+# If set, this URL is loaded instead of the template default (Instrument Serif + DM Sans).
+# Leave empty ("") to use the default font stack.
+# This is the correct mechanism for per-brand font loading — do not edit head.html.
 fonts_url: ""
 
 # Additional CSS loaded after the brand file for any site-specific tweaks (optional).
 tokens_css: ""
+
+# Short label shown above the hero headline on the home page.
+# Rendered in mono caps as an identity badge. Defaults to site.title if not set.
+hero_badge: ""
 ```
+
+### Brand CSS architecture
+
+Each site's visual identity is expressed entirely through one file: `assets/css/brand-{name}.css`. This file is loaded after `assets/dist/main.css` so all token and component declarations cascade correctly.
+
+The template's base tokens are in `src/main.css` under `:root`. A brand file overrides them by scoping under `[data-brand="X"]`:
+
+```css
+[data-brand="mysite"] {
+  --font-heading: 'My Display Font', sans-serif;
+  --font-body:    'My Body Font', sans-serif;
+  --accent:       #e02020;
+  --bg:           #ffffff;
+  --text:         #0a0a0a;
+  /* ... */
+}
+
+[data-brand="mysite"][data-theme="dark"] {
+  --bg:   #0e0e0c;
+  --text: #f5f5f2;
+  /* ... */
+}
+```
+
+**Key tokens used by the template:**
+
+| Token | Used for |
+|---|---|
+| `--font-heading` | Nav logo, post titles, card titles, section heads, essay headings |
+| `--font-body` | Base body font (`html` element) |
+| `--accent` | Links, buttons, active states, category tags |
+| `--bg` / `--bg2` / `--bg3` | Page, secondary surface, tertiary surface backgrounds |
+| `--card-bg` | Post card backgrounds |
+| `--text` / `--text-2` / `--text-3` | Primary, secondary, tertiary text |
+| `--border` | Card borders, dividers |
+| `--radius` | Card and button corner radius |
+
+**Dark mode text on dark backgrounds:** `--text-2` and `--text-3` values that work for body text on a white background are typically too dim on near-black surfaces. Set these independently in the dark mode block — do not reuse the light-mode values. See the wayward brand file for reference.
+
+**Component overrides:** After the token block, the brand file can override any component class directly:
+
+```css
+/* Card titles — condensed uppercase for editorial brands */
+[data-brand="mysite"] .card-title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+```
+
+Zero impact on other sites — all rules are scoped to `[data-brand="mysite"]`.
 
 ### Submodule paths
 
@@ -454,6 +512,10 @@ Every post automatically gets:
 - Related posts (if tag/category matches exist)
 - Previous / next post navigation
 
+### References (required for data-driven posts)
+
+Any post that cites statistics, quotes research findings, or displays chart data must close with a `## References` section. Use Chicago Author-Date format with live, verifiable URLs. See [§6 References and citations](#references-and-citations) for the full standard, format examples, and chart caption requirements.
+
 ---
 
 ## 6. Computational essays
@@ -512,18 +574,104 @@ Tufte-style margin notes. On desktop they appear in the right column; on mobile 
 
 The `data-sn` attribute links anchor to note — use the same integer for both. Numbers are displayed automatically.
 
-### Endnotes / references
+### References and citations
+
+**Every essay and substantive post must close with a References section.** This is not optional. Unverifiable claims, data charts, and statistics with no sourcing undermine the publication's credibility. The standard is strict academic form with live, verifiable URLs wherever the source exists online.
+
+#### Why this matters
+
+- Readers click through. Dead links or vague attributions ("Statistics Canada data") erode trust faster than no citation at all.
+- Data journalism requires the reader to be able to reproduce the finding. A chart with no source cannot be verified or updated.
+- LLM-generated text is particularly prone to plausible-sounding but unverifiable figures. Sourcing forces a check at write time.
+
+#### Citation format: Chicago Author-Date (preferred)
+
+Use Chicago Author-Date style for all references. This is standard in social science, geography, and economics — the primary domains of this publication.
+
+**Journal article:**
+```
+Peltzman, Sam. 2000. "Prices Rise Faster than They Fall." *Journal of Political Economy* 108(3): 466–502. https://doi.org/10.1086/262126
+```
+
+**Government / statistical release:**
+```
+Statistics Canada. 2024. *Consumer Price Index, December 2024* (Catalogue no. 62-001-X). Ottawa: Statistics Canada. https://www150.statcan.gc.ca/n1/pub/62-001-x/2025001/t001a-eng.htm
+```
+
+**Web page / news article:**
+```
+Natural Resources Canada. 2025. "Fuel Focus: Understanding Gasoline Markets." Last modified January 2025. https://natural-resources.canada.ca/energy/fuel-prices/4597
+```
+
+**Report / working paper:**
+```
+International Energy Agency. 2024. *Oil Market Report — March 2024*. Paris: IEA. https://www.iea.org/reports/oil-market-report-march-2024
+```
+
+#### What to cite
+
+| Content type | Citation required |
+|---|---|
+| Statistics, figures, percentages | Yes — always. Link to the specific table or release, not just the agency homepage. |
+| Chart / viz data | Yes — `viz-caption` on each chart plus full entry in References. |
+| Named studies or findings ("Peltzman 2000 found...") | Yes — full entry in References. |
+| Methodological claims ("ECharts uses...") | Link to docs inline; no References entry needed. |
+| General background geography | Judgment call — if a claim could be contested, cite it. |
+| Your own prior posts | Link inline; no References entry needed. |
+
+#### Inline citation markup
 
 Inline `<cite>` elements are collected and rendered as a numbered reference list at the end of the essay.
 
 ```html
 <p>
-  This was described by Lorenz<cite data-cite="Lorenz, E.N. (1963). Deterministic nonperiodic flow."></cite>
-  as sensitive dependence on initial conditions.
+  Pump prices respond to crude price increases significantly faster than to
+  decreases<cite data-cite="Peltzman, Sam. 2000. 'Prices Rise Faster than They Fall.' Journal of Political Economy 108(3): 466–502. https://doi.org/10.1086/262126"></cite> —
+  a phenomenon known as the rockets and feathers effect.
 </p>
 ```
 
-If the `data-cite` value starts with `http://` or `https://`, it renders as a hyperlink.
+If the `data-cite` value contains a URL, the rendered reference entry links to it automatically. Always include the URL in `data-cite` when one exists.
+
+#### Closing References section (required)
+
+Every essay must end with an explicit `## References` section in Markdown, even if inline `<cite>` elements are also used. The Markdown section is human-readable in the source and appears as a formatted block for readers who want to scan all sources at once.
+
+```markdown
+## References
+
+Natural Resources Canada. 2025. "Fuel Focus: Understanding Gasoline Markets." Last modified January 2025. <https://natural-resources.canada.ca/energy/fuel-prices/4597>
+
+Peltzman, Sam. 2000. "Prices Rise Faster than They Fall." *Journal of Political Economy* 108(3): 466–502. <https://doi.org/10.1086/262126>
+
+Statistics Canada. 2025. *Consumer Price Index, January 2025* (Catalogue no. 62-001-X). Ottawa: Statistics Canada. <https://www150.statcan.gc.ca/n1/pub/62-001-x/2025001/t001a-eng.htm>
+```
+
+Angle-bracket URLs (`<https://...>`) render as clickable links in Kramdown without needing separate link text.
+
+#### URL requirements
+
+- **Link to the specific page**, not the site root. `https://www150.statcan.gc.ca/n1/pub/62-001-x/2025001/t001a-eng.htm` not `https://statcan.gc.ca`.
+- **Use DOIs** for journal articles where available — DOI links are stable even when journal URLs change.
+- **Check the link resolves** before publishing. A 404 in a reference is worse than no reference.
+- **Prefer institutional URLs** over media articles for data claims. Link to the Statistics Canada table, not to a CBC article reporting the same table.
+- **For paywalled sources**, include the full citation so readers can locate the source through a library, and add a public DOI or preprint URL if one exists.
+
+#### Chart `viz-caption` requirements
+
+Every `data-viz` element must have a following `viz-caption` paragraph. The caption must include:
+
+1. **What the data shows** (brief, one clause)
+2. **The source** — institution, dataset name, date/vintage
+3. **A URL** to the specific dataset or release
+
+```html
+<div data-viz="echarts" style="height:360px" data-options='...'></div>
+
+<p class="viz-caption">Alberta monthly retail gasoline prices, January 2024–March 2026. Source: Natural Resources Canada, <em>Fuel Focus Weekly</em>, various issues. <a href="https://natural-resources.canada.ca/energy/fuel-prices/4597">https://natural-resources.canada.ca/energy/fuel-prices/4597</a></p>
+```
+
+If the data is author-constructed from multiple sources, list all sources: "Author calculations based on Statistics Canada CPI table 18-10-0004-01 and NRCan Fuel Focus weekly data."
 
 ### Callouts
 
@@ -1142,11 +1290,11 @@ The script tag is only injected when the token is non-empty, so leaving it blank
 
 ## 12. Series
 
-The series system groups related posts with a numbered navigation box that appears at the top of each post in the series.
+The series system groups related posts with a sidebar navigation list (`series-nav.html`) and an auto-generated "Continue reading" block (`essay-next.html`) at the bottom of each post.
 
 ### Setup
 
-Add `series` and `series_order` to each post's front matter. The series name must match exactly across all posts (case-sensitive):
+Add `series` and `series_order` to each post's front matter. The series name must match **exactly** across all posts (case-sensitive):
 
 ```yaml
 # Post 1
@@ -1162,13 +1310,136 @@ series_order: 2
 ---
 ```
 
-The navigation box appears automatically when at least two posts share the same `series` value. The current post is highlighted with a pink number; other posts are links.
+### Series landing page (required for sidebar and breadcrumbs)
 
-### Notes
+`series-nav.html` looks up `site.pages | where: "series_key", page.series` to find the landing page. Without a landing page the sidebar is silent and breadcrumb links are broken. Create one at `_pages/series-<slug>.md`:
 
-- `series_order` must be an integer.
+```yaml
+---
+layout: page
+permalink: /series/my-series/
+title: "My Series"
+subtitle: "A short description shown on the page"
+series_key: "My Series"   # must match series: exactly
+total_essays: 5
+tags: [tag1, tag2]
+---
+```
+
+The critical field is `series_key` — it must be an exact string match with the `series:` value in each post.
+
+### Clusters (grouping within a series)
+
+Use `cluster:` to group posts within a series. The format **must** be `"CODE — Title"` (em dash, not hyphen):
+
+```yaml
+cluster: "A — Foundations"
+```
+
+`series-nav.html` splits on ` — ` to get the code (shown as a header) and the name (shown below it). If you omit the separator, the full string becomes the code and the name is blank, producing a malformed header.
+
+All posts in the same cluster must use **the identical string** so the `where: "cluster"` filter groups them correctly.
+
+### Categories — must match established site value exactly
+
+Jekyll-archives generates a separate archive page for each unique category string. `"Economic Geography"` and `"economic-geography"` are different strings and produce different archive URLs. Always check `_posts/` for the category string used by existing posts in your topic area:
+
+```bash
+grep "^categories:" _posts/*.md | head -5
+```
+
+Use the same string. If the site uses `Economic Geography`, your new post must also use `Economic Geography`.
+
+### Rules
+
+- `series_order` must be a unique integer within a series — two posts with the same `series_order` cause `essay-next` to break (it finds two "next" posts and returns the wrong one).
 - Posts do not need to be numbered consecutively — gaps are fine.
 - A post can only belong to one series.
+- `math_core:` should be a YAML array, not a string: `math_core: ["item one", "item two"]`. A string works but renders as one unsplit chip.
+- `cluster_order:` and `prerequisites:` are not used by any template; omit them.
+
+### Two kinds of series — essay series vs curriculum modelling series
+
+The site has two distinct series structures. Getting the distinction right matters because they are listed and navigated differently.
+
+**Essay series** (`series-nav.html` sidebar only)
+
+Any group of related posts. The landing page needs `series_key` but no `series_number`. The series will not appear on `/series/` — it can be linked from navigation, a topic page, or the posts themselves. Example: "Alberta in Context" — an economic geography essay series with embedded models.
+
+Minimum landing page:
+
+```yaml
+---
+layout: page
+permalink: /series/my-series/
+title: "My Series"
+subtitle: "One sentence description"
+series_key: "My Series"     # exact match with series: in posts
+total_essays: 5
+---
+```
+
+**Curriculum modelling series** (appears on `/series/`)
+
+A sequenced curriculum with explicit pedagogy. `/series/` only lists pages that have `series_number`. These pages need substantial content — see `_pages/2026-03-01-series-1-foundations.md` as the template. Required front matter fields:
+
+```yaml
+---
+layout: page
+permalink: /series/7/
+title: "Series 7: Title"
+subtitle: "One sentence summary"
+series_number: 7             # determines listing order on /series/
+series_key: "My Series Key"  # must match series: in posts exactly
+total_essays: 12
+difficulty_range: 1-4
+estimated_hours: 40
+tags: [tag1, tag2]
+---
+```
+
+Required page content (body of the `.md` file):
+- **Series Overview** — what the series teaches and why
+- **Pedagogical Philosophy** — the learning approach
+- **Learning Objectives** — numbered list of outcomes
+- **Mathematical Progression** — per-cluster description of concepts covered
+- **Computational Skills Developed** — bullet list
+- **Prerequisites** — assumed and not-assumed
+- **Entry Points by Background** — who should start where
+- **Model Sequence** — per-cluster, per-model descriptions (the syllabus)
+- **Estimated Time Investment** — per model and full series
+
+Before creating a curriculum series page, write the full cluster and model plan. An incomplete series page on `/series/` signals to readers that the content is ready when it may not be. A post can carry `series:` and `series_order:` and use the `series-nav.html` sidebar long before the series has a `series_number` and appears on `/series/`.
+
+**Workflow for introducing a new modelling series:**
+
+1. Write posts with `series:`, `series_order:`, `cluster:`, `categories: [modelling]`
+2. Create a minimal landing page (essay series type, no `series_number`) so `series-nav.html` and breadcrumbs work
+3. Develop the full curriculum structure — cluster plan, model sequence, learning objectives
+4. When the curriculum content is ready, add `series_number:` to the landing page and write the body
+5. The series will then appear on `/series/`
+
+### Domain-first series: industry verticals
+
+Series 1–6 are **tool-first**: they introduce a mathematical concept and apply it to physical geography. Series 7 onwards uses a different pedagogy: **domain-first**. We encounter a real industry system, ask geographic questions, and develop the mathematics needed to answer them.
+
+This approach suits economic geography and industry verticals — energy, trade, transport, urban systems, resource economics. The reader may arrive from the subject matter side (they work in the industry, or read about it) rather than from mathematics. The models earn their place by illuminating something real.
+
+**Organising principle:** each cluster is an industry vertical. The mathematical tools introduced in one cluster recur in later ones — graph theory from pipeline networks reappears in trade corridor analysis; price surface concepts from energy netbacks recur in spatial arbitrage. The series accumulates a transferable toolkit through repeated application across domains.
+
+**Relationship to essay series:** a domain-first modelling series often has a companion essay series covering the same territory narratively — applying the models, making political and geographic meaning, telling the story. Keep these as separate series: the essay series is a reading thread for non-technical readers; the modelling series is the curriculum. Posts can belong to only one `series:` value, so a post is either an essay or a model, not both. Cross-link them via the series landing pages.
+
+**Example:** "Economic Systems" (Series 7, modelling) and "Alberta in Context" (essay series, no series number). The narrative essay "Alberta's Pipeline Geography" belongs to "Alberta in Context". The five quantitative models belong to "Economic Systems". The Series 7 landing page links to the Alberta in Context landing page as companion reading.
+
+**Series landing page for a domain-first series** differs from Series 1–6 in emphasis:
+- **Series Overview** — describe the industry domain and why geographic analysis reveals things other disciplines miss
+- **Pedagogical Philosophy** — state the domain-first approach explicitly; explain what "systems-thinking geographer" means in this context
+- **Learning Objectives** — frame outcomes as industry-reading skills, not mathematical competencies alone
+- **Mathematical Threads** — list the cross-cutting concepts that recur across clusters (graph theory, price surface analysis, throughput economics, etc.)
+- **Cluster sequence** — one section per industry vertical; describe planned clusters even before posts exist
+- **Entry Points by Background** — address both industry professionals and geography students, since the domain-first approach attracts both
+
+See `_pages/series-7-economic-systems.md` as the reference example.
 
 ---
 
@@ -1241,6 +1512,32 @@ All colours are CSS custom properties in `src/main.css`. Dark variants are scope
 ```
 
 Tailwind's dark mode variant also uses this selector: `darkMode: ['selector', '[data-theme="dark"]']` in `tailwind.config.js`.
+
+**Per-brand dark overrides:** A brand file can further override dark mode tokens by scoping to both attributes:
+
+```css
+[data-brand="mysite"][data-theme="dark"] {
+  --bg:     #0e0e0c;
+  --text:   #f5f5f2;
+  --text-2: #c2c2bc;   /* secondary body text — set independently, not reused from light mode */
+  --text-3: #888882;   /* tertiary metadata */
+}
+```
+
+`--text-2` in particular needs a separate dark value. Light-mode secondary greys (~`#5a5a56`) become illegible on near-black backgrounds. A value around `#b8b8b2`–`#c5c5bf` is appropriate for secondary body text. Additionally, humanist sans-serif fonts like Barlow have lighter stroke weight than DM Sans and may benefit from the `--text` value being closer to white on dark.
+
+**Always-dark elements:** Some brand components (nav bar, footer) may need to stay dark regardless of the user's light/dark preference. Achieve this with hardcoded colour values rather than CSS custom properties in those component overrides:
+
+```css
+/* Nav always dark — not affected by [data-theme] */
+[data-brand="mysite"] .nav {
+  background: #0a0a0a;
+  border-bottom: 3px solid var(--accent);
+}
+[data-brand="mysite"] .nav-links a {
+  color: #737370;  /* hardcoded, not var(--text-2) which changes with theme */
+}
+```
 
 ### Components that sync with dark mode
 

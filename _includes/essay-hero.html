@@ -20,8 +20,21 @@
 
     {% comment %}Series breadcrumb{% endcomment %}
     {% if page.series %}
+    {% assign _hero_series_page = site.pages | where: "series_key", page.series | first %}
+    {% comment %}Derive display name: if series is slug format (contains "-"), humanise it; otherwise use as-is{% endcomment %}
+    {% if page.series contains "-" %}
+      {% assign _hero_series_label = page.series | replace: "-", " " | capitalize %}
+    {% else %}
+      {% assign _hero_series_label = page.series %}
+    {% endif %}
     <nav class="essay-breadcrumb" aria-label="Series position">
-      <a href="{{ '/series/' | relative_url }}" class="essay-breadcrumb-link">{{ page.series | replace: "-", " " | capitalize }}</a>
+      {% if _hero_series_page %}
+      <a href="{{ _hero_series_page.url | relative_url }}" class="essay-breadcrumb-link">{{ _hero_series_label }}</a>
+      {% elsif page.categories.first %}
+      <a href="{{ '/topic/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="essay-breadcrumb-link">{{ _hero_series_label }}</a>
+      {% else %}
+      <span class="essay-breadcrumb-link">{{ _hero_series_label }}</span>
+      {% endif %}
       {% if page.cluster_title %}
       <span class="essay-breadcrumb-sep" aria-hidden="true">›</span>
       <span class="essay-breadcrumb-cluster">{{ page.cluster_title }}</span>
@@ -37,7 +50,7 @@
       {% if page.categories.first %}
       <a href="{{ '/topic/' | append: page.categories.first | downcase | replace: ' ', '-' | relative_url }}/" class="essay-tag-label">{{ page.categories.first }}</a>
       {% endif %}
-      {% if page.difficulty and page.categories contains 'modeling' %}
+      {% if page.difficulty and page.categories contains 'modelling' %}
       <span class="difficulty-badge difficulty-badge--{{ page.difficulty }}">Level {{ page.difficulty }}</span>
       {% endif %}
     </div>
