@@ -1,16 +1,1282 @@
 /*
- * Brand: Waywardhouse Publishing
- * Default theme: light
- * Accent: warm amber (literary/publishing)
+ * Wayward House — Brand Token Overrides
+ * Franklin Axis Type System
  *
- * Token overrides only — no layout CSS here.
+ * Loaded after assets/dist/main.css via head.html.
+ * Scoped entirely under [data-brand="wayward"].
+ * Zero impact on other sites.
  */
 
+
+/* ─── LIGHT MODE (default) ────────────────────────────────────────────── */
+
 [data-brand="wayward"] {
-  --accent:       #B45309;
-  --accent-light: #FEF3C7;
+
+  /* Typography — three-tier system */
+  --font-display:   'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-body:      'Barlow', Arial, sans-serif;
+  --font-read:      'Literata', Georgia, serif;   /* reading body: essays, posts, blockquotes */
+  --font-mono:      'IBM Plex Mono', 'Courier New', monospace;
+
+  /* Critical: theme uses --font-heading throughout (nav, post titles, card titles, etc.)
+     Map it to the display face so all heading-tagged elements use Barlow Condensed */
+  --font-heading:   var(--font-display);
+
+  /* Colour palette */
+  --black:          #0a0a0a;
+  --dark:           #242420;
+  --mid:            #5a5a56;
+  --muted:          #9a9a94;
+  --rule:           #d0d0c8;
+  --paper:          #f8f8f4;
+  --white:          #ffffff;
+
+  /* Accent system */
+  --accent:         #e02020;   /* Primary: EDGE red — rules, borders, highlights */
+  --accent-amber:   #f0a800;   /* Secondary: numeric displays on dark surfaces */
+  --accent-light:   #fde8e8;   /* Tint: alert backgrounds, callout panels */
+
+  /* Map to existing base token names (keeps Tailwind utilities working) */
+  --bg:             var(--white);
+  --bg2:            var(--paper);
+  --bg3:            #eeecea;        /* theme uses bg3 for tertiary surfaces */
+  --card-bg:        var(--white);
+  --text:           var(--black);
+  --text-2:         var(--mid);     /* theme uses --text-2 (hyphen) */
+  --text-3:         var(--muted);   /* theme uses --text-3 for tertiary text */
+  --text2:          var(--mid);     /* keep non-hyphen alias too */
+  --text-muted:     var(--muted);
+  --border:         var(--rule);
+
+  /* Remove card rounding — editorial style is sharp-edged */
+  --radius:         4px;
+
+  /* Type scale — display tier (Barlow Condensed) */
+  --text-h1:        7rem;        /* 112px — hero titles */
+  --text-h2:        3.25rem;     /* 52px  — section heads */
+  --text-h3:        1.625rem;    /* 26px  — sub-sections */
+  --text-pull:      2rem;        /* 32px  — pull quotes */
+  --text-num:       4rem;        /* 64px  — data numerics */
+
+  /* Type scale — body tier (Barlow) */
+  --text-intro:     1.125rem;    /* 18px  — lede/intro paragraphs */
+  --text-body:      0.9375rem;   /* 15px  — body prose */
+  --text-small:     0.75rem;     /* 12px  — secondary text */
+
+  /* Type scale — mono tier (IBM Plex Mono) */
+  --text-label:     0.625rem;    /* 10px  — caps labels, metadata */
+  --text-caption:   0.625rem;    /* 10px  — captions, footnotes */
+  --text-code:      0.875rem;    /* 14px  — code blocks */
+
+  /* Leading */
+  --leading-display: 0.85;      /* Tight — condensed hero titles */
+  --leading-heading: 0.92;      /* Tight — section heads */
+  --leading-intro:   1.6;       /* Comfortable — lede paragraphs */
+  --leading-body:    1.65;      /* Reading — body prose */
+  --leading-mono:    1.55;      /* Compact — captions */
+
+  /* Tracking */
+  --tracking-display: -0.01em;  /* Condensed — hero */
+  --tracking-label:    0.22em;  /* Expanded — mono caps labels */
+  --tracking-subnav:   0.18em;  /* Expanded — sub-navigation */
+
+  /* Weights */
+  --weight-hero:    900;
+  --weight-h2:      700;
+  --weight-h3:      600;
+  --weight-intro:   300;
+  --weight-body:    400;
+  --weight-ui:      500;
 }
 
+
+/* ─── DARK MODE ───────────────────────────────────────────────────────── */
+
 [data-brand="wayward"][data-theme="dark"] {
-  --accent-light: #3B200A;
+
+  --bg:             #0e0e0c;
+  --bg2:            #1a1a18;
+  --bg3:            #1a1a18;
+  --card-bg:        #1a1a18;
+  --border:         #2a2a28;
+
+  /* Accent shifts slightly warmer in dark mode */
+  --accent:         #e83030;
+  --accent-amber:   #f0a800;    /* Amber stays — excellent on dark */
+  --accent-light:   #2a0a0a;   /* Very dark red tint for backgrounds */
+
+  /* Text on dark: primary near-white; secondary/tertiary significantly brighter than
+     light-mode equivalents. Barlow has lighter strokes than DM Sans — compensate.
+     --text-2 is used for body excerpts, descriptions, secondary prose. #9a9a94
+     (the light-mode mid grey) is far too dim here — lift to a readable warm grey. */
+  --text:           #f5f5f2;   /* Primary — warm near-white */
+  --text-2:         #c2c2bc;   /* Secondary body/excerpt — readable warm grey */
+  --text-3:         #888882;   /* Tertiary metadata — visible but clearly muted */
+  --text2:          #c2c2bc;
+  --text-muted:     #888882;
 }
+
+/* Dark mode body font: bump weight one step — Barlow Regular reads thinner
+   than DM Sans on dark surfaces due to stroke contrast differences */
+[data-brand="wayward"][data-theme="dark"] body,
+[data-brand="wayward"][data-theme="dark"] p,
+[data-brand="wayward"][data-theme="dark"] .gh-content p,
+[data-brand="wayward"][data-theme="dark"] .card-excerpt,
+[data-brand="wayward"][data-theme="dark"] .post-excerpt,
+[data-brand="wayward"][data-theme="dark"] .hero-sub {
+  font-weight: 400;   /* Keep 400 but pair with brighter --text-2 above.
+                         If still dim, bump to 500 here. */
+}
+
+
+/* ─── NAVIGATION ──────────────────────────────────────────────────────── */
+
+/* Black bar — always dark regardless of page theme */
+[data-brand="wayward"] .nav {
+  background: var(--black);
+  background-color: var(--black);
+  border-bottom: 3px solid var(--accent);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Site name: condensed, uppercase, white */
+[data-brand="wayward"] .nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+[data-brand="wayward"] .nav-logo span { color: var(--accent); }
+[data-brand="wayward"] .nav-logo:hover { opacity: 0.85; color: var(--white); }
+
+/* Nav links: mono caps — always on dark background */
+[data-brand="wayward"] .nav-links a {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #737370;
+  border-radius: 2px;
+}
+[data-brand="wayward"] .nav-links a:hover,
+[data-brand="wayward"] .nav-links a.active {
+  background: #1a1a18;
+  color: var(--white);
+}
+
+/* Theme toggle and hamburger on dark nav */
+[data-brand="wayward"] .theme-toggle {
+  background: #1a1a18;
+  border-color: #2a2a28;
+  color: #737370;
+}
+[data-brand="wayward"] .theme-toggle:hover {
+  color: var(--white);
+  border-color: #444440;
+}
+
+[data-brand="wayward"] .mobile-nav-toggle {
+  border-color: #2a2a28;
+  color: #737370;
+}
+
+/* Mobile drawer stays dark regardless of theme */
+[data-brand="wayward"] .mobile-nav {
+  background: var(--black);
+  border-bottom-color: #2a2a28;
+}
+[data-brand="wayward"] .mobile-nav a {
+  color: #b0b0aa;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+[data-brand="wayward"] .mobile-nav a:hover,
+[data-brand="wayward"] .mobile-nav a.active {
+  background: #1a1a18;
+  color: var(--white);
+}
+[data-brand="wayward"] .mobile-nav-actions {
+  border-top-color: #2a2a28;
+}
+
+
+/* ─── POST CARDS ──────────────────────────────────────────────────────── */
+
+/* Flat — no lift, no float. Editorial cards sit on the page. */
+[data-brand="wayward"] .post-card {
+  box-shadow: none;
+  border-color: var(--border);
+}
+[data-brand="wayward"] .post-card:hover {
+  box-shadow: none;
+  transform: none;
+  border-color: var(--accent);
+}
+
+/* Card title: condensed uppercase — inherits --font-heading but set explicitly */
+[data-brand="wayward"] .card-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 0.95;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+[data-brand="wayward"] .card-title a:hover { color: var(--accent); }
+
+/* Category tag: mono caps */
+[data-brand="wayward"] .card-tag {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+}
+
+/* Excerpt: body font, light weight */
+[data-brand="wayward"] .card-excerpt {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+/* Card metadata: mono caps */
+[data-brand="wayward"] .card-author,
+[data-brand="wayward"] .card-date {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+
+/* ─── COMPONENT OVERRIDES ─────────────────────────────────────────────── */
+
+/* Headlines use display font */
+[data-brand="wayward"] h1,
+[data-brand="wayward"] h2,
+[data-brand="wayward"] h3,
+[data-brand="wayward"] .h1,
+[data-brand="wayward"] .h2,
+[data-brand="wayward"] .h3 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-weight: var(--weight-h2);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-heading);
+}
+
+[data-brand="wayward"] h1,
+[data-brand="wayward"] .h1 {
+  font-weight: var(--weight-hero);
+  line-height: var(--leading-display);
+}
+
+[data-brand="wayward"] h3,
+[data-brand="wayward"] .h3 {
+  font-weight: var(--weight-h3);
+  letter-spacing: 0em;    /* Zero tracking on condensed uppercase — do NOT use positive
+                             tracking here; it fights the face's natural compression. */
+}
+
+/* Body uses body font */
+[data-brand="wayward"] body,
+[data-brand="wayward"] p,
+[data-brand="wayward"] .body-text {
+  font-family: var(--font-body);
+  line-height: var(--leading-body);
+}
+
+/* Post introduction / lede */
+[data-brand="wayward"] .post-intro,
+[data-brand="wayward"] .lede {
+  font-family: var(--font-body);
+  font-size: var(--text-intro);
+  font-weight: var(--weight-intro);
+  line-height: var(--leading-intro);
+}
+
+/* Code and technical content */
+[data-brand="wayward"] code,
+[data-brand="wayward"] pre,
+[data-brand="wayward"] .mono,
+[data-brand="wayward"] .label {
+  font-family: var(--font-mono);
+}
+
+/* Pull quotes */
+[data-brand="wayward"] blockquote,
+[data-brand="wayward"] .pull-quote {
+  font-family: var(--font-display);
+  font-size: var(--text-pull);
+  font-weight: var(--weight-h2);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.1;
+  border-left: 5px solid var(--accent);
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  padding-left: 1.125rem;
+}
+
+/* Navigation labels — already handled in .nav-links a above;
+   this covers any other nav contexts */
+[data-brand="wayward"] .nav-link,
+[data-brand="wayward"] .site-nav a {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+/* Post metadata, series tags, dates */
+[data-brand="wayward"] .post-meta,
+[data-brand="wayward"] .series-tag,
+[data-brand="wayward"] time,
+[data-brand="wayward"] .tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-subnav);
+  text-transform: uppercase;
+}
+
+/* Captions and footnotes */
+[data-brand="wayward"] figcaption,
+[data-brand="wayward"] .caption,
+[data-brand="wayward"] .footnote {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  font-weight: 300;
+  line-height: var(--leading-mono);
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+/* Data / numeric display elements — dark on light, amber on dark */
+[data-brand="wayward"] .stat-number,
+[data-brand="wayward"] .data-figure,
+[data-brand="wayward"] .essay-stat {
+  font-family: var(--font-display);
+  font-weight: var(--weight-hero);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+[data-brand="wayward"] .stat-number,
+[data-brand="wayward"] .data-figure {
+  color: var(--black);
+}
+
+[data-brand="wayward"][data-theme="dark"] .stat-number,
+[data-brand="wayward"][data-theme="dark"] .data-figure,
+[data-brand="wayward"][data-theme="dark"] .essay-stat {
+  color: var(--accent-amber);
+}
+
+/* Accent rule — horizontal separator with editorial weight */
+[data-brand="wayward"] .section-rule,
+[data-brand="wayward"] hr.accent {
+  border: none;
+  border-top: 4px solid var(--black);
+  margin: 2.5rem 0;
+}
+
+[data-brand="wayward"][data-theme="dark"] .section-rule,
+[data-brand="wayward"][data-theme="dark"] hr.accent {
+  border-top-color: var(--text);
+}
+
+/* Alert / callout panel — uses accent-light, NOT full red */
+[data-brand="wayward"] .alert,
+[data-brand="wayward"] .callout {
+  background: var(--accent-light);
+  border-left: 4px solid var(--accent);
+  padding: 1rem 1.25rem;
+}
+
+/* Essay series navigation — condensed, uppercase */
+[data-brand="wayward"] .series-nav,
+[data-brand="wayward"] .series-nav a {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Footer — dark background to match nav */
+[data-brand="wayward"] footer {
+  background: var(--black);
+  border-top: 3px solid var(--accent);
+}
+
+[data-brand="wayward"] .footer-brand-logo {
+  color: var(--white);
+}
+
+[data-brand="wayward"] .footer-brand-desc {
+  color: #737370;
+}
+
+[data-brand="wayward"] .footer-col-title {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  letter-spacing: 0.2em;
+}
+
+[data-brand="wayward"] .footer-links a {
+  color: #737370;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+[data-brand="wayward"] .footer-links a:hover { color: var(--white); }
+
+[data-brand="wayward"] .footer-copy,
+[data-brand="wayward"] .footer-copy a,
+[data-brand="wayward"] .footer-legal a {
+  color: #444440;
+}
+
+[data-brand="wayward"] .social-icon {
+  background: #1a1a18;
+  border-color: #2a2a28;
+  color: #737370;
+}
+[data-brand="wayward"] .social-icon:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--white);
+}
+
+
+/* ─── HERO ────────────────────────────────────────────────────────────── */
+
+/* Black cover band — always dark, not affected by page theme */
+[data-brand="wayward"] .hero-section {
+  background: var(--black);
+  border-bottom: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Red edge bar on the right — editorial accent rule */
+[data-brand="wayward"] .hero-section::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 6px;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+/* Two-column grid: title takes more space (3:2) */
+[data-brand="wayward"] .hero {
+  padding: 52px 24px;
+  gap: 0;
+  grid-template-columns: 3fr 2fr;
+  align-items: stretch;   /* stretch so the column divider goes full height */
+}
+
+/* Left column: badge → title → subtitle, vertically spaced */
+[data-brand="wayward"] .hero-content {
+  padding-right: 52px;
+  border-right: 1px solid #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Site badge — mono red label above the headline */
+[data-brand="wayward"] .hero-badge {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.25rem;
+}
+
+/* Hero headline — massive condensed, white on black */
+[data-brand="wayward"] .hero-headline {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin: 0 0 1.5rem;
+}
+
+/* Sub — condensed uppercase, muted; not body font */
+[data-brand="wayward"] .hero-sub {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* CTA button redundant — the right-column card is already the CTA link */
+[data-brand="wayward"] .hero-cta-btn {
+  display: none;
+}
+
+/* Right column — sits on the dark band, left-padded */
+[data-brand="wayward"] .hero-visual {
+  padding-left: 52px;
+  display: flex;
+  align-items: stretch;
+}
+
+[data-brand="wayward"] .hero-card-link {
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+[data-brand="wayward"] .hero-card-link:hover { opacity: 1; }
+
+/* Strip card chrome — transparent, borderless panel on the dark band */
+[data-brand="wayward"] .hero-card-preview {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  flex: 1;
+}
+[data-brand="wayward"] .hero-card-link:hover .hero-card-preview {
+  transform: none;
+  box-shadow: none;
+}
+
+/* No image in hero — text-only editorial treatment */
+[data-brand="wayward"] .hero-card-preview .card-image {
+  display: none;
+}
+
+[data-brand="wayward"] .hero-card-preview .card-body {
+  padding: 0;
+  gap: 12px;
+}
+
+/* "Latest" label — extends a rule to the right like spec-lbl */
+[data-brand="wayward"] .hero-card-latest-label {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+[data-brand="wayward"] .hero-card-latest-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #2a2a2a;
+}
+
+/* Category tag */
+[data-brand="wayward"] .hero-card-preview .card-tag {
+  color: #737370;
+}
+
+/* Post title: large condensed on dark */
+[data-brand="wayward"] .hero-card-preview .card-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+  font-weight: 800;
+  line-height: 0.95;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+[data-brand="wayward"] .hero-card-preview .card-title a { color: var(--white); }
+[data-brand="wayward"] .hero-card-link:hover .hero-card-preview .card-title a {
+  color: var(--accent);
+}
+
+/* Excerpt: light body text, very muted */
+[data-brand="wayward"] .hero-card-preview .card-excerpt {
+  color: #a0a09a;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.8125rem;
+}
+
+/* Metadata bar */
+[data-brand="wayward"] .hero-card-preview .card-meta {
+  border-top-color: #2a2a2a;
+}
+[data-brand="wayward"] .hero-card-preview .card-author,
+[data-brand="wayward"] .hero-card-preview .card-date {
+  color: #555550;
+}
+
+/* "Read now →" */
+[data-brand="wayward"] .hero-read-cta {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: auto;
+}
+
+/* Mobile: stack columns, drop divider */
+@media (max-width: 768px) {
+  [data-brand="wayward"] .hero {
+    grid-template-columns: 1fr;
+    padding: 40px 24px;
+  }
+  [data-brand="wayward"] .hero-content {
+    padding-right: 0;
+    border-right: none;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  [data-brand="wayward"] .hero-visual {
+    padding-left: 0;
+    padding-top: 32px;
+  }
+  [data-brand="wayward"] .hero-section::after {
+    display: none;
+  }
+}
+
+
+/* ─── HOME PAGE SECTIONS ──────────────────────────────────────────────── */
+
+/* Section divider — heavy top rule, then title extends a hairline to the right */
+[data-brand="wayward"] .section-header {
+  border-top: 4px solid var(--black);
+  padding-top: 1rem;
+  margin-bottom: 2rem;
+  align-items: center;
+  gap: 0;
+}
+[data-brand="wayward"][data-theme="dark"] .section-header {
+  border-top-color: var(--text);
+}
+
+/* Section title: condensed uppercase + extending rule (spec-lbl pattern) */
+[data-brand="wayward"] .section-title {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  margin: 0;
+}
+[data-brand="wayward"] .section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+[data-brand="wayward"][data-theme="dark"] .section-title::after {
+  background: var(--border);
+}
+
+/* Section "view all" link: mono caps, right-aligned after the rule */
+[data-brand="wayward"] .section-link {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--accent);
+  white-space: nowrap;
+  margin-left: 16px;
+}
+
+/* Featured section: paper surface differentiates from the white posts section */
+[data-brand="wayward"] .featured-section {
+  border-bottom: none;
+}
+
+/* Lead card — first card in featured grid spans full width */
+[data-brand="wayward"] .featured-grid .post-card:first-child {
+  grid-column: 1 / -1;
+  flex-direction: row;
+}
+[data-brand="wayward"] .featured-grid .post-card:first-child .card-image {
+  width: 40%;
+  aspect-ratio: unset;
+  flex-shrink: 0;
+}
+[data-brand="wayward"] .featured-grid .post-card:first-child .card-body {
+  flex: 1;
+  padding: 28px;
+  justify-content: center;
+}
+[data-brand="wayward"] .featured-grid .post-card:first-child .card-title {
+  font-size: 2rem;
+  line-height: 0.9;
+  -webkit-line-clamp: unset;
+}
+[data-brand="wayward"] .featured-grid .post-card:first-child .card-excerpt {
+  -webkit-line-clamp: 4;
+}
+
+/* Lead card — first card in posts grid spans two columns */
+[data-brand="wayward"] .posts-grid .post-card:first-child {
+  grid-column: span 2;
+  flex-direction: row;
+}
+[data-brand="wayward"] .posts-grid .post-card:first-child .card-image {
+  width: 45%;
+  aspect-ratio: unset;
+  flex-shrink: 0;
+}
+[data-brand="wayward"] .posts-grid .post-card:first-child .card-body {
+  flex: 1;
+  padding: 28px;
+  justify-content: center;
+}
+[data-brand="wayward"] .posts-grid .post-card:first-child .card-title {
+  font-size: 2rem;
+  line-height: 0.9;
+  -webkit-line-clamp: unset;
+}
+[data-brand="wayward"] .posts-grid .post-card:first-child .card-excerpt {
+  -webkit-line-clamp: 3;
+}
+
+/* No image: lead card without feature image — stack vertically, strong bg */
+[data-brand="wayward"] .posts-grid .post-card:first-child .card-image--no-feature,
+[data-brand="wayward"] .featured-grid .post-card:first-child .card-image--no-feature {
+  display: none;
+}
+[data-brand="wayward"] .posts-grid .post-card:first-child:has(.card-image--no-feature),
+[data-brand="wayward"] .featured-grid .post-card:first-child:has(.card-image--no-feature) {
+  flex-direction: column;
+}
+[data-brand="wayward"] .posts-grid .post-card:first-child:has(.card-image--no-feature) .card-body,
+[data-brand="wayward"] .featured-grid .post-card:first-child:has(.card-image--no-feature) .card-body {
+  width: 100%;
+}
+
+/* Mobile: lead cards revert to single column stacked */
+@media (max-width: 768px) {
+  [data-brand="wayward"] .posts-grid .post-card:first-child,
+  [data-brand="wayward"] .featured-grid .post-card:first-child {
+    grid-column: span 1;
+    flex-direction: column;
+  }
+  [data-brand="wayward"] .posts-grid .post-card:first-child .card-image,
+  [data-brand="wayward"] .featured-grid .post-card:first-child .card-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+  [data-brand="wayward"] .posts-grid .post-card:first-child .card-body,
+  [data-brand="wayward"] .featured-grid .post-card:first-child .card-body {
+    padding: 20px;
+  }
+  [data-brand="wayward"] .posts-grid .post-card:first-child .card-title,
+  [data-brand="wayward"] .featured-grid .post-card:first-child .card-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* Streams section — no padding; cards fill the container edge to edge */
+[data-brand="wayward"] .topics-section {
+  padding: 0;
+  border-bottom: none;
+  background: transparent;
+}
+[data-brand="wayward"] .topics-inner {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: 100%;
+}
+[data-brand="wayward"] .topics-section .section-header {
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-bottom: 0;
+  border-top-width: 0;
+  padding-top: 0;
+}
+
+/* Grid: two panels side by side, no gap, framed by a single rule border */
+[data-brand="wayward"] .streams-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 4px solid var(--black);
+  border-bottom: 1px solid var(--border);
+}
+[data-brand="wayward"][data-theme="dark"] .streams-grid {
+  border-top-color: var(--text);
+  border-bottom-color: var(--border);
+}
+
+/* Base card reset — override the rounded bordered default completely */
+[data-brand="wayward"] .stream-card {
+  border: none;
+  border-radius: 0;
+  padding: 3rem 2.5rem;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: none;
+}
+
+/* Odd cards: white surface (primary reading) */
+[data-brand="wayward"] .stream-card:nth-child(odd) {
+  background: var(--white);
+  border-right: 1px solid var(--border);
+}
+[data-brand="wayward"][data-theme="dark"] .stream-card:nth-child(odd) {
+  background: #1a1a18;
+  border-right-color: #2a2a28;
+}
+
+/* Even cards: black surface (feature/hero) */
+[data-brand="wayward"] .stream-card:nth-child(even) {
+  background: var(--black);
+}
+
+[data-brand="wayward"] .stream-card:hover {
+  background: var(--black);
+  border-color: transparent;
+}
+[data-brand="wayward"] .stream-card:nth-child(odd):hover {
+  background: var(--black);
+  border-right-color: transparent;
+}
+
+/* Stream card label — mono caps */
+[data-brand="wayward"] .stream-card-label {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.25rem;
+}
+[data-brand="wayward"] .stream-card:nth-child(even) .stream-card-label {
+  color: #5a2020;
+}
+[data-brand="wayward"] .stream-card:hover .stream-card-label {
+  color: #5a2020;
+}
+
+/* Stream card title — large condensed display, pushes visual weight */
+[data-brand="wayward"] .stream-card-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 0.9;
+  color: var(--black);
+  margin: 0 0 1.25rem;
+}
+[data-brand="wayward"] .stream-card:nth-child(even) .stream-card-title {
+  color: var(--white);
+}
+[data-brand="wayward"] .stream-card:hover .stream-card-title {
+  color: var(--white);
+}
+
+/* Stream card description */
+[data-brand="wayward"] .stream-card-desc {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--mid);
+  flex: 1;
+  margin: 0 0 1.5rem;
+}
+/* On black surfaces: much lighter, upright, weight 400 — italic 300 is illegible on dark */
+[data-brand="wayward"] .stream-card:nth-child(even) .stream-card-desc,
+[data-brand="wayward"] .stream-card:hover .stream-card-desc {
+  color: #b0b0a8;
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* CTA — mono caps, pinned to bottom */
+[data-brand="wayward"] .stream-card-cta {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: auto;
+  display: block;
+}
+
+/* Mobile: stack vertically */
+@media (max-width: 640px) {
+  [data-brand="wayward"] .streams-grid {
+    grid-template-columns: 1fr;
+  }
+  [data-brand="wayward"] .stream-card:nth-child(odd) {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   POST / ESSAY PAGE TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Post header band ────────────────────────────────────────────────────── */
+
+[data-brand="wayward"] .post-header {
+  background: var(--bg);
+  border-bottom: none;
+  border-top: 4px solid var(--accent);
+  padding: 48px 0 40px;
+}
+
+[data-brand="wayward"] .post-header-inner {
+  max-width: 760px;
+}
+
+/* Category tag — mono caps */
+[data-brand="wayward"] .post-tag {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 16px;
+}
+[data-brand="wayward"] .post-tag:hover { color: var(--text); }
+
+/* Post title — large condensed display face */
+[data-brand="wayward"] .post-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+/* Post excerpt — lede: Literata italic, generous size */
+[data-brand="wayward"] .post-excerpt {
+  font-family: var(--font-read);
+  font-size: 1.1875rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--text-2);
+  font-style: italic;
+  margin-bottom: 28px;
+}
+
+/* Post meta — mono caps, smaller */
+[data-brand="wayward"] .post-meta {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  gap: 6px;
+}
+[data-brand="wayward"] .post-meta-name,
+[data-brand="wayward"] .post-meta-date,
+[data-brand="wayward"] .post-meta-updated,
+[data-brand="wayward"] .post-meta-reading-time {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+[data-brand="wayward"] .post-meta-author { font-weight: 400; }
+[data-brand="wayward"] .post-meta-divider { opacity: 0.4; }
+
+/* ─── Post content (gh-content) ───────────────────────────────────────────── */
+
+/* h2 and h3 are already --font-heading (→ Barlow Condensed via token map).
+   Bump weight and tighten — condensed display face reads better heavier. */
+[data-brand="wayward"] .gh-content h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  border-top: 2px solid var(--border);
+  padding-top: 28px;
+  margin-top: 56px;
+}
+[data-brand="wayward"] .gh-content h3 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin-top: 40px;
+}
+[data-brand="wayward"] .gh-content h4 {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-top: 28px;
+}
+
+/* gh-content body prose — Literata reading serif */
+[data-brand="wayward"] .gh-content {
+  font-family: var(--font-read);
+  font-size: 1.0625rem;
+  line-height: 1.8;
+}
+
+/* Blockquote — accent left rule, Literata italic pull-quote */
+[data-brand="wayward"] .gh-content blockquote {
+  border-left: 3px solid var(--accent);
+  margin-left: 0;
+  padding-left: 20px;
+  font-family: var(--font-read);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+
+/* Post-nav — prev/next links, mono caps */
+[data-brand="wayward"] .post-nav {
+  border-top: 4px solid var(--black);
+  margin-top: 0;
+  background: var(--bg);
+}
+[data-brand="wayward"][data-theme="dark"] .post-nav { border-top-color: var(--text); }
+
+[data-brand="wayward"] .post-nav-direction {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+[data-brand="wayward"] .post-nav-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 1;
+}
+[data-brand="wayward"] .post-nav-item:hover .post-nav-title { color: var(--accent); }
+
+/* Tag chips in post footer */
+[data-brand="wayward"] .post-tag-chip {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border-radius: 0;
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+  color: var(--text-3);
+  text-decoration: none;
+}
+[data-brand="wayward"] .post-tag-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Share label */
+[data-brand="wayward"] .post-share-label {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+
+/* ─── Essay hero ──────────────────────────────────────────────────────────── */
+
+[data-brand="wayward"] .essay-hero {
+  border-top: 4px solid var(--accent);
+  padding-top: 48px;
+}
+
+/* Breadcrumb — mono caps */
+[data-brand="wayward"] .essay-breadcrumb {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+[data-brand="wayward"] .essay-breadcrumb-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+[data-brand="wayward"] .essay-breadcrumb-link:hover { color: var(--text); }
+[data-brand="wayward"] .essay-breadcrumb-sep { opacity: 0.4; }
+
+/* Category tag — mono caps */
+[data-brand="wayward"] .essay-tag-label {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+[data-brand="wayward"] .essay-tag-label:hover { color: var(--text); }
+
+/* Essay title — override Instrument Serif with Barlow Condensed */
+[data-brand="wayward"] .essay-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+/* Essay excerpt — Literata italic lede */
+[data-brand="wayward"] .essay-excerpt {
+  font-family: var(--font-read);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.1875rem;
+  line-height: 1.7;
+  color: var(--text-2);
+}
+
+/* Essay meta — mono caps */
+[data-brand="wayward"] .essay-meta {
+  border-top-color: var(--border);
+}
+[data-brand="wayward"] .essay-author {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+[data-brand="wayward"] .essay-meta-secondary {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+[data-brand="wayward"] .essay-date,
+[data-brand="wayward"] .essay-reading-time,
+[data-brand="wayward"] .essay-updated {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Essay content headings — same weight treatment as post */
+[data-brand="wayward"] .essay-content h2 {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  border-top: 2px solid var(--border);
+  padding-top: 28px;
+  margin-top: 56px;
+}
+[data-brand="wayward"] .essay-content h3 {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+/* Difficulty badge — accent-tinted */
+[data-brand="wayward"] .difficulty-badge {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border-radius: 0;
+  background: var(--accent-light);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 3px 8px;
+}
+
+/* Essay prereqs block */
+[data-brand="wayward"] .essay-prereqs {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+[data-brand="wayward"] .essay-prereqs-label {
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+/* Essay-next / continue reading block */
+[data-brand="wayward"] .essay-next {
+  border-top: 4px solid var(--black);
+  border-bottom: none;
+  background: var(--bg);
+}
+[data-brand="wayward"][data-theme="dark"] .essay-next { border-top-color: var(--text); }
+
+[data-brand="wayward"] .essay-next-label {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+[data-brand="wayward"] .essay-next-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.9;
+}
+[data-brand="wayward"] .essay-next-title:hover { color: var(--accent); }
