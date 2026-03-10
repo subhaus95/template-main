@@ -1236,16 +1236,16 @@
   letter-spacing: -0.01em;
 }
 
-/* Difficulty badge — accent-tinted */
+/* Difficulty badge — keep base per-level colour ramp (green/blue/purple/orange/red);
+   only adjust shape and font to match brand */
 [data-brand="wayward"] .difficulty-badge {
   font-family: var(--font-mono);
   font-size: 0.5rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   border-radius: 0;
-  background: var(--accent-light);
-  color: var(--accent);
-  border: 1px solid var(--accent);
+  background: transparent;
+  border: 1px solid currentColor;
   padding: 3px 8px;
 }
 
