@@ -65,6 +65,20 @@ const TILE_PRESETS = {
   },
 };
 
+// ── Overlay tile presets ──────────────────────────────────────────────────────
+// Added as a second layer on top of the base tile layer.
+// Activated by data-overlay="preset-name" on the [data-leaflet] element.
+
+const OVERLAY_PRESETS = {
+  // ESA WorldCover 2021 — 10 m global land cover classification, free via Terrascope
+  worldcover: {
+    url:     'https://services.terrascope.be/wmts/v2?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=WORLDCOVER_2021_MAP&STYLE=default&FORMAT=image/png&TileMatrixSet=GoogleMapsCompatible&TileMatrix={z}&TileRow={y}&TileCol={x}',
+    attr:    '&copy; <a href="https://esa-worldcover.org/">ESA WorldCover 2021</a> / Terrascope',
+    maxZoom: 13,
+    opacity: 0.85,
+  },
+};
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 /**
@@ -126,6 +140,17 @@ export function renderLeaflet(el, options = {}) {
   // Replace the initial tile layer with a theme-aware one
   map.eachLayer(l => { if (l instanceof L.TileLayer) map.removeLayer(l); });
   applyTheme(document.documentElement.dataset.theme === 'dark');
+
+  // Optional overlay layer (e.g. land cover classification) via data-overlay
+  const overlayKey = el.dataset.overlay ?? options.overlay;
+  if (overlayKey && OVERLAY_PRESETS[overlayKey]) {
+    const op = OVERLAY_PRESETS[overlayKey];
+    L.tileLayer(op.url, {
+      attribution: op.attr,
+      maxZoom:     op.maxZoom,
+      opacity:     op.opacity ?? 1,
+    }).addTo(map);
+  }
 
   // Watch for theme changes
   const themeObserver = new MutationObserver(() => {

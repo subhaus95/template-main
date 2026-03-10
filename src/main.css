@@ -1332,6 +1332,7 @@ footer {
   white-space: nowrap;
 }
 .archive-item-body { display: flex; flex-direction: column; gap: 4px; }
+.archive-excerpt { font-size: 0.8125rem; color: var(--text-3); line-height: 1.4; margin: 0; }
 .archive-title {
   font-family: var(--font-heading);
   font-size: 1.0625rem;
@@ -1346,6 +1347,61 @@ footer {
 @media (max-width: 640px) {
   .archive-item { grid-template-columns: 1fr; gap: 4px; }
   .archive-reading-time { display: none; }
+}
+
+/* Topic group — essay library grouped by category */
+.topic-group { margin-bottom: 48px; }
+.topic-group:last-child { margin-bottom: 0; }
+.topic-group-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 0;
+}
+.topic-group-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+.topic-group-title a { color: inherit; }
+.topic-group-title a:hover { color: var(--accent); opacity: 1; }
+.topic-group-count { font-size: 0.8125rem; color: var(--text-3); }
+
+/* Scene compare — side-by-side image + map panel */
+.scene-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 2rem 0;
+}
+.scene-compare figure { margin: 0; }
+.scene-compare img {
+  display: block;
+  width: 100%;
+  height: 480px;
+  object-fit: contain;
+  background: #000;
+  border-radius: var(--radius);
+}
+.scene-compare-map {
+  height: 480px;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.scene-compare figcaption {
+  font-size: 0.8125rem;
+  color: var(--text-3);
+  text-align: center;
+  margin-top: 8px;
+  line-height: 1.4;
+}
+@media (max-width: 640px) {
+  .scene-compare { grid-template-columns: 1fr; }
+  .scene-compare img, .scene-compare-map { height: 320px; }
 }
 
 /* Topics index grid */
