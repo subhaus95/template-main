@@ -1371,6 +1371,44 @@ footer {
 .topic-group-title a:hover { color: var(--accent); opacity: 1; }
 .topic-group-count { font-size: 0.8125rem; color: var(--text-3); }
 
+/* Standalone result figure — derived data shown as a labelled result panel */
+.figure-result {
+  margin: 2.5rem 0;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card-bg);
+}
+.figure-result-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  padding: 10px 16px 0;
+}
+.figure-result .scene-compare {
+  margin: 0;
+  padding: 12px;
+  gap: 12px;
+}
+.figure-result .scene-compare img  { height: 500px; }
+.figure-result .scene-compare-map  { height: 500px; }
+.figure-result > figcaption {
+  font-size: 0.8125rem;
+  color: var(--text-3);
+  line-height: 1.5;
+  padding: 10px 16px 14px;
+  border-top: 1px solid var(--border);
+  margin-top: 0;
+  text-align: left;
+}
+@media (max-width: 640px) {
+  .figure-result .scene-compare img,
+  .figure-result .scene-compare-map { height: 320px; }
+}
+
 /* Scene compare — side-by-side image + map panel */
 .scene-compare {
   display: grid;
