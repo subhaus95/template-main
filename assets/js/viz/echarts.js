@@ -51,6 +51,21 @@ function ensureTheme(echarts) {
   themeRegistered = true;
 }
 
+// ── Defaults ──────────────────────────────────────────────────────────────────
+// Applied to every chart before per-chart options so individual charts can
+// override them. containLabel ensures axis labels are never clipped by the
+// container edge regardless of label length or wrapping.
+
+const CHART_DEFAULTS = {
+  grid: {
+    top:          56,
+    right:        24,
+    bottom:       56,
+    left:         24,
+    containLabel: true,
+  },
+};
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 /**
@@ -72,8 +87,16 @@ export function renderEChart(el, options) {
   const existing = echarts.getInstanceByDom(el);
   if (existing) existing.dispose();
 
+  // Merge defaults: per-chart grid settings win, but defaults ensure labels
+  // are never clipped when a chart omits grid config entirely.
+  const merged = {
+    ...CHART_DEFAULTS,
+    ...options,
+    grid: { ...CHART_DEFAULTS.grid, ...(options.grid || {}) },
+  };
+
   const chart = echarts.init(el, 'loom', { renderer: 'canvas' });
-  chart.setOption(options);
+  chart.setOption(merged);
 
   // Keep chart correctly sized when the container resizes.
   // requestAnimationFrame avoids the "ResizeObserver loop" warning in Safari.
