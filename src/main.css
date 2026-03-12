@@ -2148,3 +2148,101 @@ footer {
 .pyodide-cell__output--error {
   color: #ef4444;
 }
+
+/* ── Generic interactive model controls ─────────────────────────────────────
+   Used by inline model scripts that render sliders, buttons, and result
+   panels. Provides baseline styling so controls look intentional in all
+   browsers (Safari renders unstyled buttons as plain text). */
+
+.viz-container {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-block: 1.5rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: var(--card-bg, var(--bg));
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.controls input[type="range"] {
+  accent-color: var(--accent);
+  width: 8rem;
+  cursor: pointer;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+  padding-top: 0.25rem;
+}
+
+.controls button,
+.button-group button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.8125rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.controls button:hover,
+.button-group button:hover {
+  background: var(--card-bg, var(--bg));
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.controls button:active,
+.button-group button:active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.gps-results {
+  padding: 1rem 1.25rem;
+  background: var(--card-bg, var(--bg));
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.gps-results h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.gps-results p {
+  margin: 0.25rem 0;
+}
