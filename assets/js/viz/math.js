@@ -26,5 +26,7 @@ export function initMath() {
     throwOnError: false,
     // Ignore content inside <code> and <pre> blocks
     ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+    // Ignore elements with class="no-katex" — use for prose containing $ currency symbols
+    ignoredClasses: ['no-katex'],
   });
 }
