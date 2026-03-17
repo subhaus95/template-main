@@ -1,5 +1,7 @@
 {% if page.series %}
-{% assign series_posts = site.posts | where: "series", page.series | sort: "series_order" %}
+{% assign _series_from_posts = site.posts | where: "series", page.series %}
+{% assign _series_from_models = site.models | where: "series", page.series %}
+{% assign series_posts = _series_from_posts | concat: _series_from_models | sort: "series_order" %}
 {% if series_posts.size > 1 %}
 
 {% comment %}Scope to current cluster when the post has one{% endcomment %}
