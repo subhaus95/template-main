@@ -101,7 +101,13 @@ export function renderPyodideCell(el) {
 
     try {
       await pyodideInstance.runPythonAsync(editorEl.value);
-      outputEl.textContent = lines.join('\n');
+      const out = lines.join('\n');
+      // If output looks like HTML, render it; otherwise use textContent to escape
+      if (out.trimStart().startsWith('<')) {
+        outputEl.innerHTML = out;
+      } else {
+        outputEl.textContent = out;
+      }
     } catch (err) {
       outputEl.classList.add('pyodide-cell__output--error');
       outputEl.textContent = String(err);
