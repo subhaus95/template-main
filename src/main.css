@@ -19,6 +19,8 @@
   --text-2:        #6B6860;
   --text-3:        #9C9890;
   --border:        #E4E2DF;
+  --code-bg:       #f6f8fa;
+  --code-text:     #24292e;
   --shadow:        0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
   --shadow-hover:  0 4px 12px rgba(0,0,0,0.10), 0 12px 40px rgba(0,0,0,0.08);
   --radius:        12px;
@@ -37,6 +39,8 @@
   --text-2:        #A8A49E;
   --text-3:        #6B6860;
   --border:        #2C2C2A;
+  --code-bg:       #1e1e1e;
+  --code-text:     #f8f8f2;
   --shadow:        0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover:  0 4px 12px rgba(0,0,0,0.4), 0 12px 40px rgba(0,0,0,0.3);
 }
@@ -906,13 +910,14 @@ footer {
   color: var(--text-2);
 }
 .gh-content pre {
-  background: #1e1e1e;
+  background: var(--code-bg, #1e1e1e);
   border-radius: 8px;
   padding: 20px 24px;
   overflow-x: auto;
   margin: 24px 0;
   font-size: 0.875rem;
   line-height: 1.6;
+  color: var(--code-text, #f8f8f2);
 }
 .gh-content code {
   font-size: 0.875em;

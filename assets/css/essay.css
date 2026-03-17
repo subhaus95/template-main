@@ -360,10 +360,10 @@
   top: 10px;
   right: 10px;
   padding: 4px 10px;
-  background: rgba(255 255 255 / 0.12);
-  border: 1px solid rgba(255 255 255 / 0.18);
+  background: rgba(0 0 0 / 0.08);
+  border: 1px solid rgba(0 0 0 / 0.15);
   border-radius: 4px;
-  color: rgba(255 255 255 / 0.65);
+  color: rgba(0 0 0 / 0.5);
   font-size: 0.6875rem;
   font-family: inherit;
   cursor: pointer;
@@ -372,7 +372,18 @@
 }
 
 .copy-btn:hover {
-  background: rgba(255 255 255 / 0.22);
+  background: rgba(0 0 0 / 0.15);
+  color: rgba(0 0 0 / 0.8);
+}
+
+[data-theme="dark"] .copy-btn {
+  background: rgba(255 255 255 / 0.10);
+  border-color: rgba(255 255 255 / 0.16);
+  color: rgba(255 255 255 / 0.55);
+}
+
+[data-theme="dark"] .copy-btn:hover {
+  background: rgba(255 255 255 / 0.20);
   color: #fff;
 }
 
@@ -766,17 +777,6 @@
   background: hsl(142 30% 13%);
   border-color: hsl(142 35% 28%);
   color: hsl(142 25% 78%);
-}
-
-[data-theme="dark"] .copy-btn {
-  background: rgba(0 0 0 / 0.25);
-  border-color: rgba(255 255 255 / 0.12);
-  color: rgba(255 255 255 / 0.5);
-}
-
-[data-theme="dark"] .copy-btn:hover {
-  background: rgba(0 0 0 / 0.4);
-  color: rgba(255 255 255 / 0.8);
 }
 
 [data-theme="dark"] .story-section {
