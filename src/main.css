@@ -2117,11 +2117,25 @@ footer {
   overflow: hidden;
 }
 
-.pyodide-cell__code pre {
+.pyodide-cell__editor {
+  display: block;
+  width: 100%;
+  min-height: 6rem;
   margin: 0;
-  border-radius: 0;
+  padding: 20px 24px;
+  box-sizing: border-box;
+  border: none;
   border-bottom: 1px solid var(--border);
-  background: var(--bg3);
+  border-radius: 0;
+  background: var(--code-bg, #f6f8fa);
+  color: var(--code-text, #24292e);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-x: auto;
+  resize: none;
+  outline: none;
 }
 
 .pyodide-cell__toolbar {

@@ -48,9 +48,7 @@ export function renderPyodideCell(el) {
   const source = codeEl.textContent;
 
   el.innerHTML = `
-    <div class="pyodide-cell__code">
-      <pre><code class="language-python"></code></pre>
-    </div>
+    <textarea class="pyodide-cell__editor" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
     <div class="pyodide-cell__toolbar">
       <button class="pyodide-cell__run-btn btn btn-primary" type="button">Run</button>
       <span class="pyodide-cell__status"></span>
@@ -58,12 +56,30 @@ export function renderPyodideCell(el) {
     <div class="pyodide-cell__output" hidden></div>
   `;
 
-  // Restore source text safely (no innerHTML injection)
-  el.querySelector('.pyodide-cell__code code').textContent = source;
-
+  const editorEl  = el.querySelector('.pyodide-cell__editor');
   const runBtn    = el.querySelector('.pyodide-cell__run-btn');
   const statusEl  = el.querySelector('.pyodide-cell__status');
   const outputEl  = el.querySelector('.pyodide-cell__output');
+
+  editorEl.value = source;
+
+  // Auto-resize textarea to fit content
+  editorEl.style.height = 'auto';
+  editorEl.style.height = editorEl.scrollHeight + 'px';
+  editorEl.addEventListener('input', () => {
+    editorEl.style.height = 'auto';
+    editorEl.style.height = editorEl.scrollHeight + 'px';
+  });
+
+  // Tab key inserts spaces instead of moving focus
+  editorEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const s = editorEl.selectionStart;
+      editorEl.value = editorEl.value.slice(0, s) + '    ' + editorEl.value.slice(editorEl.selectionEnd);
+      editorEl.selectionStart = editorEl.selectionEnd = s + 4;
+    }
+  });
 
   runBtn.addEventListener('click', async () => {
     if (!pyodideInstance) {
@@ -84,7 +100,7 @@ export function renderPyodideCell(el) {
     pyodideInstance.setStderr({ batched: (line) => lines.push(line) });
 
     try {
-      await pyodideInstance.runPythonAsync(source);
+      await pyodideInstance.runPythonAsync(editorEl.value);
       outputEl.textContent = lines.join('\n');
     } catch (err) {
       outputEl.classList.add('pyodide-cell__output--error');
