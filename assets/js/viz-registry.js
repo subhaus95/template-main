@@ -32,7 +32,7 @@
 
 import { initMath }                          from './viz/math.js';
 import { initDiagrams }                      from './viz/diagrams.js';
-import { renderEChart, updateEChart }        from './viz/echarts.js';
+import { initECharts, renderEChart, updateEChart } from './viz/echarts.js';
 import { renderMap, updateMap }              from './viz/mapbox.js';
 import { renderLeaflet, updateLeaflet }      from './viz/leaflet.js';
 import { renderD3, updateD3 }                from './viz/d3.js';
@@ -122,7 +122,7 @@ export const REGISTRY = [
       styles:  [],
       scripts: ['https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js'],
     },
-    init:     null,
+    init:     initECharts,
     selector: '[data-viz]',
     render:   renderEChartsEl,
     update:   updateEChart,
