@@ -22,6 +22,8 @@
  *   data-terrain="2.0"  — enable terrain with custom exaggeration
  *   Adds Mapbox DEM source, setTerrain(), and an atmosphere sky layer.
  *   Best combined with data-pitch > 0 and satellite-streets-v12 or outdoors-v12.
+ *
+ * Default style: light-v11 (clean greyscale basemap — overlays and typography read clearly).
  */
 
 // ── Preset locations ──────────────────────────────────────────────────────────
@@ -58,6 +60,133 @@ function showError(el, message) {
   el.innerHTML = `<p style="color:var(--text-3,#9C9890);font-size:0.875rem;padding:16px;text-align:center;">${message}</p>`;
 }
 
+// ── Overlay helpers ───────────────────────────────────────────────────────────
+
+/**
+ * Add GeoJSON features as named layers on the map.
+ *
+ * Called after the style has loaded. Parses data-geojson as a GeoJSON
+ * FeatureCollection. Each Feature must carry a `properties.id` string that
+ * becomes the base layer id for that feature. Optional properties:
+ *   color        — fill / line / circle colour  (default "#3b82f6")
+ *   opacity      — fill / line opacity           (default 0.3)
+ *   outline-color — stroke colour for fills      (default == color)
+ *   width        — line width in px              (default 2)
+ *   dash         — [gap, dash] array for dashed lines
+ *   radius       — circle radius in px           (default 6)
+ *   visible      — false to start hidden         (default true)
+ *
+ * Polygon / MultiPolygon  → two layers: "<id>-fill" and "<id>-outline"
+ * LineString / MultiLine  → one layer: "<id>"
+ * Point / MultiPoint      → one circle layer: "<id>"
+ *
+ * @param {mapboxgl.Map} map
+ * @param {string}       geojsonStr  Raw JSON string from data-geojson
+ */
+function addGeoJsonLayers(map, geojsonStr) {
+  let fc;
+  try { fc = JSON.parse(geojsonStr); } catch (err) {
+    console.warn('[loom/mapbox] Invalid data-geojson:', err);
+    return;
+  }
+  if (!Array.isArray(fc?.features)) return;
+
+  fc.features.forEach((feature, i) => {
+    const p          = feature.properties ?? {};
+    const id         = p.id ?? `loom-layer-${i}`;
+    const color      = p.color ?? '#3b82f6';
+    const opacity    = p.opacity ?? 0.3;
+    const outline    = p['outline-color'] ?? color;
+    const visibility = p.visible === false ? 'none' : 'visible';
+    const geomType   = feature.geometry?.type ?? '';
+
+    const srcId = `loom-src-${id}`;
+    try {
+      map.addSource(srcId, { type: 'geojson', data: feature });
+    } catch (err) {
+      console.warn(`[loom/mapbox] addSource failed for "${srcId}":`, err.message);
+      return;
+    }
+
+    try {
+      if (geomType === 'Polygon' || geomType === 'MultiPolygon') {
+        map.addLayer({
+          id:     `${id}-fill`,
+          type:   'fill',
+          source: srcId,
+          paint:  { 'fill-color': color, 'fill-opacity': opacity },
+          layout: { visibility },
+        });
+        map.addLayer({
+          id:     `${id}-outline`,
+          type:   'line',
+          source: srcId,
+          paint:  { 'line-color': outline, 'line-width': p.width ?? 2,
+                    'line-opacity': Math.min(opacity * 2.5, 1) },
+          layout: { visibility },
+        });
+      } else if (geomType === 'LineString' || geomType === 'MultiLineString') {
+        const paint = {
+          'line-color':   color,
+          'line-width':   p.width  ?? 2,
+          'line-opacity': opacity,
+        };
+        if (p.dash) paint['line-dasharray'] = p.dash;
+        map.addLayer({ id, type: 'line', source: srcId, paint, layout: { visibility } });
+      } else if (geomType === 'Point' || geomType === 'MultiPoint') {
+        map.addLayer({
+          id,
+          type:   'circle',
+          source: srcId,
+          paint:  { 'circle-radius': p.radius ?? 6, 'circle-color': color,
+                    'circle-opacity': opacity, 'circle-stroke-width': 1.5,
+                    'circle-stroke-color': '#ffffff' },
+          layout: { visibility },
+        });
+      } else {
+        console.warn(`[loom/mapbox] Unknown geometry type "${geomType}" for feature "${id}"`);
+      }
+    } catch (err) {
+      console.warn(`[loom/mapbox] addLayer failed for "${id}":`, err.message);
+    }
+  });
+}
+
+/**
+ * Add simple dot markers with hover tooltips from data-markers JSON.
+ *
+ * @param {mapboxgl.Map} map
+ * @param {string}       markersStr  JSON array of {lng, lat, label?, color?}
+ */
+function addMapboxMarkers(map, markersStr) {
+  const mapboxgl = window.mapboxgl;
+  let markers;
+  try { markers = JSON.parse(markersStr); } catch (err) {
+    console.warn('[loom/mapbox] Invalid data-markers:', err);
+    return;
+  }
+  markers.forEach(({ lng, lat, label, color = '#ef4444' }) => {
+    const dot = document.createElement('div');
+    dot.style.cssText = `
+      width:11px; height:11px; border-radius:50%;
+      background:${color}; border:2px solid #fff;
+      box-shadow:0 1px 4px rgba(0,0,0,.45); cursor:default;`;
+
+    const marker = new mapboxgl.Marker({ element: dot })
+      .setLngLat([lng, lat])
+      .addTo(map);
+
+    if (label) {
+      const popup = new mapboxgl.Popup({
+        offset: 12, closeButton: false, closeOnClick: false,
+      }).setHTML(`<span style="font-size:.75rem;font-weight:600;white-space:nowrap">${label}</span>`);
+      marker.setPopup(popup);
+      dot.addEventListener('mouseenter', () => { if (!marker.getPopup().isOpen()) marker.togglePopup(); });
+      dot.addEventListener('mouseleave', () => { if (marker.getPopup().isOpen())  marker.togglePopup(); });
+    }
+  });
+}
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 /**
@@ -68,6 +197,16 @@ function showError(el, message) {
  *   2. `config` argument
  *   3. Named preset from PRESETS
  *   4. Fallback defaults
+ *
+ * Overlay extensions (declarative, no JS needed in the post):
+ *   data-markers  — JSON array [{lng, lat, label?, color?}]
+ *   data-geojson  — GeoJSON FeatureCollection string (see addGeoJsonLayers above)
+ *
+ * The map instance is also stored on el._map and a 'mapbox:ready' event is
+ * dispatched so inline post scripts can access it:
+ *   document.getElementById('my-map').addEventListener('mapbox:ready', e => {
+ *     const map = e.detail.map;  // full Mapbox GL JS Map instance
+ *   });
  *
  * @param {HTMLElement} el
  * @param {object} config  Optional overrides: { center, zoom, pitch, bearing, style }
@@ -128,7 +267,7 @@ export function renderMap(el, config = {}) {
   const style =
     el.dataset.style ??
     config.style ??
-    'mapbox://styles/mapbox/outdoors-v12';
+    'mapbox://styles/mapbox/light-v11';
 
   // Mapbox GL JS v3 defaults to globe projection; use mercator for essay maps
   // unless the author explicitly requests globe via data-projection="globe".
@@ -142,19 +281,26 @@ export function renderMap(el, config = {}) {
     return null;
   }
 
-  // Mapbox GL JS v3 enables fog/atmosphere by default. Disable it for essay
-  // maps — it washes out features at low zoom levels and with non-zero pitch.
-  // Terrain maps that explicitly opt in can re-enable fog after style.load.
-  if (el.dataset.terrain === undefined) {
-    map.on('style.load', () => {
+  // All post-load setup (fog, overlays, terrain, markers) runs once after the
+  // map's style and initial tiles are fully ready. Using 'load' (not 'style.load')
+  // because style.load fires before addSource/addLayer are safe in GL JS v3,
+  // and once() prevents duplicate-source errors on any style refresh.
+  map.once('load', () => {
+    // Disable fog/atmosphere — it washes out features at low zoom levels.
+    // Terrain maps opt back in by adding their own sky layer below.
+    if (el.dataset.terrain === undefined) {
       try { map.setFog(null); } catch (_) { /* style may not support fog */ }
-    });
-  }
+    }
 
-  // 3D terrain — enabled by data-terrain (presence) or data-terrain="1.5" (exaggeration)
-  if (el.dataset.terrain !== undefined) {
-    const exaggeration = parseFloat(el.dataset.terrain) || 1.5;
-    map.on('load', () => {
+    // GeoJSON overlay layers — data-geojson is a GeoJSON FeatureCollection.
+    if (el.dataset.geojson) addGeoJsonLayers(map, el.dataset.geojson);
+
+    // Dot markers with hover tooltips.
+    if (el.dataset.markers) addMapboxMarkers(map, el.dataset.markers);
+
+    // 3D terrain — enabled by data-terrain (presence) or data-terrain="1.5".
+    if (el.dataset.terrain !== undefined) {
+      const exaggeration = parseFloat(el.dataset.terrain) || 1.5;
       map.addSource('mapbox-dem', {
         type: 'raster-dem',
         url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
@@ -171,12 +317,19 @@ export function renderMap(el, config = {}) {
           'sky-atmosphere-sun-intensity': 15,
         },
       });
-    });
-  }
+    }
+  });
 
   // Keep map sized correctly when the container resizes
   const observer = new ResizeObserver(() => map.resize());
   observer.observe(el);
+
+  // Store instance on the element and fire a ready event so inline post
+  // scripts can access the full Mapbox GL JS API without importing this module.
+  el._map = map;
+  map.once('load', () => {
+    el.dispatchEvent(new CustomEvent('mapbox:ready', { bubbles: true, detail: { map } }));
+  });
 
   return map;
 }
@@ -192,16 +345,29 @@ export function renderMap(el, config = {}) {
  */
 export function updateMap(el, data, instance) {
   if (!instance) return;
-  const { center, zoom, pitch, bearing, animate = true } = data;
+  const { center, zoom, pitch, bearing, animate = true, layers } = data;
   const duration = animate ? 1500 : 0;
 
+  // Camera transition
   const flyOptions = { duration };
-  if (center       != null) flyOptions.center  = center;
-  if (zoom         != null) flyOptions.zoom     = zoom;
-  if (pitch        != null) flyOptions.pitch    = pitch;
-  if (bearing      != null) flyOptions.bearing  = bearing;
+  if (center  != null) flyOptions.center  = center;
+  if (zoom    != null) flyOptions.zoom    = zoom;
+  if (pitch   != null) flyOptions.pitch   = pitch;
+  if (bearing != null) flyOptions.bearing = bearing;
+  if (Object.keys(flyOptions).length > 1) instance.flyTo(flyOptions);
 
-  if (Object.keys(flyOptions).length > 1) {
-    instance.flyTo(flyOptions);
+  // Layer visibility — { "layer-id": true/false } or { "layer-id": "visible"/"none" }
+  // Polygon features produce two layers ("<id>-fill" and "<id>-outline");
+  // the shorthand "<id>" targets both if individual layers are not specified.
+  if (layers && typeof layers === 'object') {
+    Object.entries(layers).forEach(([id, val]) => {
+      const vis = (val === true || val === 'visible') ? 'visible' : 'none';
+      // Try exact id first, then the auto-generated fill/outline pair
+      for (const layerId of [id, `${id}-fill`, `${id}-outline`]) {
+        try {
+          if (instance.getLayer(layerId)) instance.setLayoutProperty(layerId, 'visibility', vis);
+        } catch (_) { /* layer not yet added */ }
+      }
+    });
   }
 }

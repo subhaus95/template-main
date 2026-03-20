@@ -57,7 +57,7 @@ Note the Mapbox convention: **longitude first**, then latitude. This is the reve
 
 ## Style overrides
 
-The default style is `outdoors-v12` — terrain shading, land cover, contours, and waterways. It works at any zoom level and in any page context. Override with `data-style` when you need something different:
+The default style is `light-v11` — a clean greyscale basemap that keeps overlays and typography readable. Override with `data-style` when you need terrain detail or imagery:
 
 ```html
 <div data-map="calgary" data-style="mapbox://styles/mapbox/satellite-streets-v12"

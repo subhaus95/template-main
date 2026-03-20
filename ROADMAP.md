@@ -81,6 +81,67 @@ Alpine.js `difficultyFilter` component on the series page wrapper. CSS attribute
 
 ---
 
+## Phase D — Audience connection
+
+Features that help readers understand the site, engage with the content, and reach the author. All items here are achievable within the static constraint.
+
+### D1. Site orientation page
+
+The Start Here page (A3) answers "where do I begin?" but not "how does this site work?". New readers — especially those arriving at a computational essay mid-series — have no context for: what interactive visualisations can do, how series/difficulty navigation works, what the Math Primer is for, or how localStorage progress is saved.
+
+A dedicated `/about/how-to-use/` page (or a section within the Start Here page) should cover:
+- What a computational essay is and how to read one (TOC, interactive charts, footnotes)
+- The series/cluster/difficulty system and how to navigate it
+- The Math Primer and when to use it
+- Mark-as-complete and what it means (localStorage, not synced)
+- How search works (`⌘K`)
+
+Implementation: pure Jekyll/Liquid static page. No new template infrastructure needed. Could itself be written as a short essay in the essay layout — modelling the format it describes.
+
+### D2. Open-source model attribution
+
+The computational models embedded in essays are open source, but there is no in-page signal that readers can inspect, fork, or run the code. For a technical audience, the ability to view and modify source is a differentiator.
+
+Two levels of attribution:
+
+**Site-level:** A visible statement (About page, footer, or essay sidebar) that all models are open source, linking to the GitHub organisation. This can be a single line of copy; no front matter changes needed.
+
+**Per-essay:** An optional `github_source` front matter key. When set, renders a "View source on GitHub" link in the essay hero or alongside the model. Value is a path relative to the repo root (e.g. `assets/js/models/ricker.js`), resolved to an absolute URL via `site.github.repository_url`.
+
+```yaml
+github_source: assets/js/models/ricker.js
+```
+
+Implementation: one conditional in `essay-hero.html` or a new `model-source.html` include. Backwards-compatible; renders nothing on posts without the key.
+
+### D3. Comment and response strategy
+
+Giscus requires a GitHub account. This is a low barrier for the developer-adjacent technical audience but a real barrier for academic readers, industry analysts, and policy-oriented readers — precisely the constituencies the applied series (19–25) are written for.
+
+**Immediate (no new infrastructure):**
+Add a "Reply by email" mailto link below the Giscus widget on every post with `comments: true`. Pre-fill the subject line with the post title via Liquid:
+
+```html
+<a href="mailto:{{ site.email }}?subject=Re: {{ page.title | uri_escape }}">Reply by email</a>
+```
+
+Requires only `site.email` in `_config.yml`. Zero maintenance overhead. Renders alongside Giscus, not instead of it — GitHub users get Giscus; everyone else gets a low-friction fallback.
+
+**Phase B addition — Webmentions:**
+[Webmentions](https://www.w3.org/TR/webmention/) allow readers to respond from their own platforms (Mastodon, a personal blog, etc.) and have those responses surface on the post. The static-site implementation:
+
+1. Register with [webmention.io](https://webmention.io/) (free) — provides a receiving endpoint
+2. Add `<link>` tags to `head.html` pointing at the endpoint
+3. Connect [Bridgy](https://brid.gy/) to translate Mastodon/social mentions into webmentions
+4. Fetch and render received webmentions via JS on page load (small script, no framework dependency)
+
+No account required from the reader. Rewards the Mastodon-active academic audience and makes cross-blog discussion visible on the post. Fits cleanly into the existing static architecture.
+
+**If proper non-GitHub comments become necessary:**
+[Cusdis](https://cusdis.com/) is the closest like-for-like replacement for Giscus without the GitHub requirement. Readers need only a name and email. Author moderates via email notification. Free hosted tier; open source for self-hosting. Iframe embed, ~5KB, no tracking. The current Giscus include could be made conditional on a `comment_system` config key (`giscus` | `cusdis`) to allow per-site selection.
+
+---
+
 ## Phase C — External services (only if content volume justifies)
 
 Defer until there are 50+ essays and measurable multi-device readership.
@@ -99,7 +160,7 @@ These require a platform shift, not a template enhancement:
 
 - Instructor portal / class management
 - Achievement / badge system
-- Community forums beyond Giscus
+- Community forums (threaded discussion, moderation tools, member profiles)
 - LMS integration (Moodle, Canvas)
 - Print-on-demand textbook
 - Mobile app / PWA
